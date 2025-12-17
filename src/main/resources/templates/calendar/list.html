@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Calendar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #206bc4;
+            --primary-hover: #1a5ca8;
+            --secondary: #6c757d;
+            --success: #2fb344;
+            --danger: #d63939;
+            --light: #f8f9fa;
+            --dark: #1f2327;
+            --border: #e6e6e6;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --radius: 6px;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            padding: 20px;
+            color: var(--dark);
+        }
+
+        .calendar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: white;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .calendar-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark);
+            text-align: left;
+        }
+
+        .calendar-summary {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            margin-top: 10px;
+        }
+
+        .category-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .category-badges .badge {
+            padding: 0.5em 0.75em;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: var(--dark) !important;
+        }
+
+        .category-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .summary-item {
+            font-weight: 500;
+        }
+
+        .text-red {
+            color: var(--danger);
+        }
+
+        .text-green {
+            color: var(--success);
+        }
+
+        .calendar-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: var(--radius);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: var(--dark);
+        }
+
+        .btn:hover {
+            background: var(--light);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: var(--light);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .weekday {
+            padding: 12px;
+            text-align: center;
+            font-weight: 500;
+            color: var(--secondary);
+            background: white;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: var(--border);
+        }
+
+        .calendar-day {
+            background: white;
+            height: 140px;
+            padding: 8px;
+            position: relative;
+            transition: background 0.2s;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .calendar-day:hover {
+            background: #f8fafc;
+        }
+
+        .day-number {
+            font-weight: 500;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 0.9rem;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .other-month {
+            color: #adb5bd;
+            background: #f8f9fa;
+        }
+
+        .today {
+            background: #e7f5ff;
+        }
+
+        .today .day-number {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            position: relative;
+            margin-left: 5px;
+            margin-top: 2px;
+            vertical-align: top;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        .status-indicator-circle {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            margin: 0 1px;
+            background-color: #28a745;
+            opacity: 0.3;
+            animation: status-pulse 1.4s infinite ease-in-out;
+        }
+
+        .status-red .status-indicator-circle {
+            background-color: #dc3545;
+        }
+
+        .status-orange .status-indicator-circle {
+            background-color: #fd7e14;
+        }
+
+        .status-indicator-circle:nth-child(2) {
+            animation-delay: -0.32s;
+        }
+
+        .status-indicator-circle:nth-child(3) {
+            animation-delay: -0.52s;
+        }
+
+        @keyframes status-pulse {
+
+            0%,
+            100% {
+                transform: scale(0);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* 移除CSS tooltip，使用JavaScript实现 */
+
+        /* Custom tooltip styles */
+        .custom-tooltip {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            max-width: 250px;
+            z-index: 9999;
+            pointer-events: none;
+            display: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .tooltip-arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid rgba(0, 0, 0, 0.9);
+        }
+
+        .events-container {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .events-list {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 80px;
+            margin-bottom: 5px;
+        }
+
+        /* Make the modal close buttons smaller */
+        #closeModal,
+        #closeCommentModal {
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+        }
+
+        .event {
+            font-size: 0.7rem;
+            padding: 2px 4px;
+            margin-bottom: 2px;
+            border-radius: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            position: relative;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .event.confirmed {
+            opacity: 0.7;
+            background: transparent !important;
+            color: var(--dark) !important;
+        }
+
+        .event.confirmed::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 0;
+            border-bottom: 1px solid #000000;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .event:hover {
+            background: #f0f1f3 !important;
+        }
+
+        .event-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .event-title {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .event-amount {
+            font-weight: 600;
+            color: var(--dark) !important;
+            text-align: right;
+            white-space: nowrap;
+            margin-left: auto;
+            margin-right: 0;
+        }
+
+        .more-events {
+            font-size: 0.7rem;
+            color: var(--primary);
+            margin-top: 2px;
+            cursor: pointer;
+            text-align: center;
+            padding: 2px;
+            border-radius: 3px;
+            background: rgba(32, 107, 196, 0.1);
+        }
+
+        .more-events:hover {
+            background: rgba(32, 107, 196, 0.2);
+        }
+
+        .expense-amount {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--dark) !important;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 3px;
+            padding-top: 3px;
+            border-top: 1px dashed #eee;
+        }
+
+        /* 透明背景的灰色评论按钮样式 */
+        .comment-button {
+            background: transparent;
+            /* 透明背景 */
+            color: #666666;
+            /* 灰色 */
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            opacity: 0.8;
+            margin-left: 5px;
+        }
+
+        .comment-button:hover {
+            opacity: 1;
+            color: #333333;
+            /* 更深的灰色 */
+        }
+
+        .comment-button.no-comments {
+            opacity: 0.7;
+        }
+
+        .comment-button.has-comments {
+            color: orange;
+            opacity: 0.9;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            80%,
+            100% {
+                transform: scale(0);
+            }
+
+            40% {
+                transform: scale(1);
+            }
+        }
+
+        /* 模态框样式 */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-backdrop.show {
+            opacity: 1;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1050;
+            display: none;
+            overflow: hidden;
+            outline: 0;
+        }
+
+        .modal.show {
+            display: block;
+        }
+
+        .modal-dialog {
+            position: relative;
+            width: auto;
+            margin: 0.5rem;
+            pointer-events: none;
+            max-width: 500px;
+            margin: 1.75rem auto;
+        }
+
+        .modal.show .modal-dialog {
+            transform: none;
+        }
+
+        .modal-content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            pointer-events: auto;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            border-radius: 0.3rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            outline: 0;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding: 1rem 1rem;
+            border-bottom: 1px solid #dee2e6;
+            border-top-left-radius: calc(0.3rem - 1px);
+            border-top-right-radius: calc(0.3rem - 1px);
+        }
+
+        .modal-title {
+            margin-bottom: 0;
+            line-height: 1.5;
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+
+        .btn-close {
+            padding: 0.5rem 0.5rem;
+            margin: -0.5rem -0.5rem -0.5rem auto;
+            background-color: transparent;
+            border: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1;
+            color: #000;
+            text-shadow: 0 1px 0 #fff;
+            opacity: 0.5;
+            cursor: pointer;
+        }
+
+        .btn-close:hover {
+            opacity: 0.75;
+        }
+
+        .modal-body {
+            position: relative;
+            flex: 1 1 auto;
+            padding: 1rem;
+        }
+
+        .modal-footer {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0.75rem;
+            border-top: 1px solid #dee2e6;
+            border-bottom-right-radius: calc(0.3rem - 1px);
+            border-bottom-left-radius: calc(0.3rem - 1px);
+        }
+
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .form-control[readonly] {
+            background-color: #f8f9fa;
+            opacity: 1;
+        }
+
+        .day-expenses-modal .expense-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .day-expenses-modal .expense-item:last-child {
+            border-bottom: none;
+        }
+
+        .day-expenses-modal .expense-title {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .day-expenses-modal .expense-amount {
+            font-weight: 600;
+            color: var(--danger);
+        }
+
+        .day-expenses-modal .expense-category {
+            font-size: 0.8rem;
+            color: var(--secondary);
+            margin-top: 2px;
+        }
+
+        /* 滚动条样式 */
+        .events-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .events-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 2px;
+        }
+
+        .events-list::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 2px;
+        }
+
+        .events-list::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        /* 日期操作按钮样式 */
+        .day-actions {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            margin-left: auto;
+        }
+
+        /* 日期数字容器样式 */
+        .day-number {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            cursor: pointer;
+            line-height: 1;
+            text-align: left;
+            justify-content: flex-start;
+        }
+
+        /* 访问记录图标样式 */
+        .visit-icon {
+            display: none;
+            color: #f25426;
+            stroke-width: 3;
+            transition: all 0.2s ease;
+            vertical-align: middle;
+            padding: 0;
+            margin: 0;
+            transform: translateX(-1px);
+        }
+
+        /* 访问记录按钮样式 - 保持兼容性 */
+        .visit-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .visit-button:hover {
+            background-color: rgba(47, 179, 68, 0.1);
+        }
+
+        .visit-button.has-visit {
+            background-color: transparent;
+            color: #f25426;
+        }
+
+        .visit-button.has-visit svg {
+            stroke-width: 1;
+        }
+
+        .visit-button.no-visit {
+            background-color: transparent;
+            color: currentColor;
+        }
+
+        .d-flex {
+            display: flex !important;
+        }
+
+        .justify-content-between {
+            justify-content: space-between !important;
+        }
+
+        .text-end {
+            text-align: right !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Page Content -->
+    <div class="calendar-container">
+        <div class="calendar-header">
+            <div>
+                <div class="calendar-title" th:text="${currentYear} + '-' + ${#numbers.formatInteger(currentMonth, 2)}">
+                </div>
+                <div class="calendar-summary">
+                    <div class="category-badges">
+                        <span th:each="category, iterStat : ${expensesByCategory}"
+                            class="badge rounded-pill ms-1 bg-transparent border border-secondary d-flex align-items-center gap-1">
+                            <span class="category-dot" th:style="'background-color: ' + ${category.key.color}"></span>
+                            <span
+                                th:text="${category.key.name} + ': ¥' + ${#numbers.formatDecimal(category.value, 0, 'COMMA', 2, 'POINT')}"
+                                class="text-dark"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="calendar-controls">
+                <a th:href="@{/calendar(year=${currentMonth == 1 ? currentYear - 1 : currentYear}, month=${currentMonth == 1 ? 12 : currentMonth - 1})}"
+                    class="btn btn-sm" id="prevMonth">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </a>
+                <a th:href="@{/calendar}" class="btn btn-sm btn-primary" id="todayBtn">Today</a>
+                <a th:href="@{/calendar(year=${currentMonth == 12 ? currentYear + 1 : currentYear}, month=${currentMonth == 12 ? 1 : currentMonth + 1})}"
+                    class="btn btn-sm" id="nextMonth">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="calendar-weekdays">
+            <div class="weekday">Sun</div>
+            <div class="weekday">Mon</div>
+            <div class="weekday">Tue</div>
+            <div class="weekday">Wed</div>
+            <div class="weekday">Thu</div>
+            <div class="weekday">Fri</div>
+            <div class="weekday">Sat</div>
+        </div>
+
+        <div class="calendar-grid">
+            <!-- 日历日期通过Thymeleaf动态生成 -->
+            <div th:each="day, status : ${calendarDays}"
+                th:class="|calendar-day ${day.otherMonth ? 'other-month' : ''} ${day.today ? 'today' : ''}|"
+                th:data-date="${day.fullDate}">
+                <div class="day-number">
+                    <span th:text="${#numbers.formatInteger(day.day, 2)}"></span>
+                    <!-- 只为本月日期渲染访问记录图标 -->
+                    <div th:if="${!day.otherMonth}">
+                        <!-- 访问记录图标 - 点击日期数字或图标可以切换记录状态 -->
+                        <svg class="visit-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
+                            stroke-linecap="round" stroke-linejoin="round"
+                            th:style="${day.hasVisitLog ? 'display: inline-block; color: #f25426;' : 'display: none;'}"
+                            th:data-date="${day.fullDate}" title="Toggle visit record">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M5 12l5 5l10 -10" />
+                        </svg>
+                    </div>
+                    <!-- 只为本月日期渲染操作按钮 -->
+                    <div class="day-actions" th:if="${!day.otherMonth}">
+                        <!-- 评论按钮 -->
+                        <button class="comment-button"
+                            th:classappend="${day.commentCount == 0 ? 'no-comments' : 'has-comments'}"
+                            th:data-comments="${day.commentsText}" th:data-comments-json="${day.commentsJson}"
+                            title="Add or edit comments">
+                            <!-- 无评论时显示气泡加号图标 -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="icon icon-tabler icons-tabler-outline icon-tabler-bubble-plus"
+                                th:style="${day.commentCount == 0 ? 'display: block;' : 'display: none;'}">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path
+                                    d="M12.4 19a4.2 4.2 0 0 1 -1.57 -.298l-3.83 2.298v-3.134a2.668 2.668 0 0 1 -1.795 -3.773a4.8 4.8 0 0 1 2.908 -8.933a5.335 5.335 0 0 1 9.194 1.078a5.333 5.333 0 0 1 4.45 6.89" />
+                                <path d="M16 19h6" />
+                                <path d="M19 16v6" />
+                            </svg>
+                            <!-- 有评论时显示消息圆圈图标 -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="currentColor"
+                                class="icon icon-tabler icons-tabler-filled icon-tabler-message-circle"
+                                th:style="${day.commentCount == 0 ? 'display: none;' : 'display: block;'}">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path
+                                    d="M5.821 4.91c3.899 -2.765 9.468 -2.539 13.073 .535c3.667 3.129 4.168 8.238 1.152 11.898c-2.841 3.447 -7.965 4.583 -12.231 2.805l-.233 -.101l-4.374 .931l-.04 .006l-.035 .007h-.018l-.022 .005h-.038l-.033 .004l-.021 -.001l-.023 .001l-.033 -.003h-.035l-.022 -.004l-.022 -.002l-.035 -.007l-.034 -.005l-.016 -.004l-.024 -.005l-.049 -.016l-.024 -.005l-.011 -.005l-.022 -.007l-.045 -.02l-.03 -.012l-.011 -.006l-.014 -.006l-.031 -.018l-.045 -.024l-.016 -.011l-.037 -.026l-.04 -.027l-.002 -.004l-.013 -.009l-.043 -.04l-.025 -.02l-.006 -.007l-.056 -.062l-.013 -.014l-.011 -.014l-.039 -.056l-.014 -.019l-.005 -.01l-.042 -.073l-.007 -.012l-.004 -.008l-.007 -.012l-.014 -.038l-.02 -.042l-.004 -.016l-.004 -.01l-.017 -.061l-.007 -.018l-.002 -.015l-.005 -.019l-.005 -.033l-.008 -.042l-.002 -.031l-.003 -.01v-.016l-.004 -.054l.001 -.036l.001 -.023l.002 -.053l.004 -.025v-.019l.008 -.035l.005 -.034l.005 -.02l.004 -.02l.018 -.06l.003 -.013l1.15 -3.45l-.022 -.037c-2.21 -3.747 -1.209 -8.391 2.413 -11.119z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="events-container">
+                    <div class="events-list">
+                        <div th:if="${day.expenses.size() > 0}" th:each="expense : ${day.expenses}" class="event"
+                            th:classappend="${expense.confirmed} ? 'confirmed' : ''"
+                            th:attr="data-expense-id=${expense.id}">
+                            <span class="event-dot" th:style="'background-color: ' + ${expense.category.color}"></span>
+                            <span class="event-title" th:text="${expense.title}"></span>
+                            <span class="event-amount"
+                                th:text="'￥' + ${#numbers.formatDecimal(expense.amount, 0, 'COMMA', 2, 'POINT')}"></span>
+                            <span class="event-note" style="display: none;" th:text="${expense.note}"></span>
+                            <span class="event-category-name" style="display: none;"
+                                th:text="${expense.category.name}"></span>
+                            <span class="event-channel" style="display: none;" th:text="${expense.channel.name}"></span>
+                            <span class="event-payment-method" style="display: none;"
+                                th:text="${expense.payment?.name}"></span>
+                        </div>
+                    </div>
+                    <!-- 按分类汇总（放在原来total的位置） -->
+                    <div th:if="${day.expensesByCategory.size() > 0}" class="day-category-summary expense-amount">
+                        <div th:each="entry : ${day.expensesByCategory}"
+                            class="day-category-item d-flex align-items-center justify-content-between"
+                            style="font-size: 0.65rem; margin-top: 2px; padding: 1px 3px; border-radius: 2px; background: transparent;">
+                            <span class="d-flex align-items-center gap-1">
+                                <span class="category-dot" th:style="'background-color: ' + ${entry.key.color}"></span>
+                                <span th:text="${entry.key.name}"></span>
+                            </span>
+                            <span th:text="'￥' + ${#numbers.formatDecimal(entry.value, 0, 'COMMA', 2, 'POINT')}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 支出详情模态框 -->
+    <div class="modal-backdrop fade" id="modalBackdrop" style="display: none;"></div>
+    <div class="modal fade" id="expenseModal" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Expense Details</h5>
+                    <button type="button" class="btn-close" id="closeModal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="expense-detail">
+                        <span class="expense-label">Title</span>
+                        <input type="text" class="form-control" id="modalTitle" readonly>
+                    </div>
+                    <div class="expense-detail">
+                        <span class="expense-label">Amount</span>
+                        <input type="text" class="form-control" id="modalAmount" readonly>
+                    </div>
+                    <div class="expense-detail">
+                        <span class="expense-label">Category</span>
+                        <input type="text" class="form-control" id="modalCategory" readonly>
+                    </div>
+                    <div class="expense-detail">
+                        <span class="expense-label">Date</span>
+                        <input type="text" class="form-control" id="modalDate" readonly>
+                    </div>
+                    <div class="expense-detail">
+                        <span class="expense-label">Notes</span>
+                        <textarea class="form-control" id="modalNotes" readonly rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-primary" id="closeModalBtn">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comment Edit Modal -->
+    <div class="modal fade" id="commentModal" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="commentModalTitle">Edit Comments</h5>
+                    <button type="button" class="btn-close" id="closeCommentModal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- 评论编辑输入框 -->
+                    <div class="mb-3">
+                        <label for="newCommentContent" class="form-label">Edit Comment</label>
+                        <textarea class="form-control" id="newCommentContent" rows="3"
+                            placeholder="Enter your comment here..."></textarea>
+                    </div>
+                    <input type="hidden" id="commentDate" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-danger" id="deleteCommentBtn"
+                        style="display: none;">Delete Comment</button>
+                    <button type="button" class="btn btn-sm btn-secondary" id="closeCommentModalBtn">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-primary" id="saveCommentBtn">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        // 显示评论编辑模态框
+        function showCommentModal(dateString, comments, commentsJson) {
+            // 显示模态框背景
+            const modalBackdrop = document.getElementById('modalBackdrop');
+            modalBackdrop.style.display = 'block';
+            setTimeout(() => {
+                modalBackdrop.classList.add('show');
+            }, 10);
+
+            // 显示评论编辑模态框
+            const commentModal = document.getElementById('commentModal');
+            commentModal.style.display = 'block';
+            setTimeout(() => {
+                commentModal.classList.add('show');
+            }, 10);
+
+            // 更新模态框标题
+            const modalTitle = document.getElementById('commentModalTitle');
+            modalTitle.textContent = `Edit Comment for ${dateString}`;
+
+            // 保存日期
+            const commentDate = document.getElementById('commentDate');
+            commentDate.value = dateString;
+
+            // 设置评论内容到输入框
+            const newCommentContent = document.getElementById('newCommentContent');
+
+            // 默认清空输入框
+            newCommentContent.value = '';
+
+            // 获取删除按钮
+            const deleteCommentBtn = document.getElementById('deleteCommentBtn');
+            console.log('Delete button element:', deleteCommentBtn);
+
+            // 调试日志
+            console.log('showCommentModal called with:');
+            console.log('dateString:', dateString);
+            console.log('comments:', comments);
+            console.log('commentsJson:', commentsJson);
+
+            // 显示删除按钮，用于测试
+            deleteCommentBtn.style.display = 'inline-block';
+            deleteCommentBtn.style.visibility = 'visible';
+            deleteCommentBtn.style.opacity = '1';
+            deleteCommentBtn.style.position = 'relative';
+            deleteCommentBtn.style.zIndex = '9999';
+
+            // 如果有评论JSON数据，使用第一条评论的内容填充输入框
+            if (commentsJson && commentsJson !== '[]') {
+                try {
+                    const commentArray = JSON.parse(commentsJson);
+                    console.log('Parsed commentArray:', commentArray);
+
+                    if (commentArray && commentArray.length > 0) {
+                        // 尝试使用第一条评论的内容
+                        if (commentArray[0].content && commentArray[0].content.trim()) {
+                            newCommentContent.value = commentArray[0].content;
+                        }
+
+                        // 设置删除按钮的日期属性
+                        deleteCommentBtn.dataset.date = dateString;
+
+                        // 如果有评论ID，设置删除按钮的commentId属性
+                        if (commentArray[0].id) {
+                            console.log('Comment has ID:', commentArray[0].id);
+                            deleteCommentBtn.dataset.commentId = commentArray[0].id;
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error parsing comments JSON:', e);
+                    // 如果JSON解析失败，回退到使用字符串评论
+                    if (comments && comments.trim()) {
+                        newCommentContent.value = comments;
+                    }
+                    // 设置删除按钮的日期属性
+                    deleteCommentBtn.dataset.date = dateString;
+                }
+            } else if (comments && comments.trim()) {
+                // 如果没有评论JSON数据，但有评论字符串，使用评论字符串
+                newCommentContent.value = comments;
+                console.log('Using comments string instead of JSON');
+                // 设置删除按钮的日期属性
+                deleteCommentBtn.dataset.date = dateString;
+            }
+        }
+
+        // 删除评论的事件处理函数
+        function handleDeleteComment(event) {
+            const button = event.target;
+            const commentId = button.dataset.commentId;
+            const date = button.dataset.date;
+
+            console.log('Delete button clicked');
+            console.log('Button element:', button);
+            console.log('Button dataset:', button.dataset);
+            console.log('Comment ID:', commentId);
+            console.log('Date:', date);
+
+            if (confirm('Are you sure you want to delete this comment?')) {
+                // 准备要调用的API URL
+                let deleteUrl;
+                if (commentId) {
+                    deleteUrl = `/expenses/comments/${commentId}`;
+                    console.log('Sending DELETE request for comment ID:', commentId);
+                    console.log('DELETE URL:', deleteUrl);
+                } else {
+                    deleteUrl = `/expenses/comments/date/${date}`;
+                    console.log('No comment ID found, using date to delete comment');
+                    console.log('DELETE URL:', deleteUrl);
+                }
+
+                // 使用DELETE API删除评论
+                fetch(deleteUrl, {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        console.log('DELETE response status:', response.status);
+                        console.log('DELETE response headers:', response.headers);
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('DELETE response data:', data);
+                        if (data.status === 'success') {
+                            console.log('Comment deleted successfully');
+
+                            // 清空评论编辑框
+                            document.getElementById('newCommentContent').value = '';
+
+                            // 隐藏删除按钮
+                            button.style.display = 'none';
+
+                            // 关闭评论编辑模态框
+                            hideCommentModal();
+
+                            // 更新按钮上的评论状态
+                            updateCommentButtonState(date);
+                        } else {
+                            console.error('Failed to delete comment:', data.message);
+                            alert('Failed to delete comment: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error deleting comment:', error);
+                        // 确保错误消息有意义，即使error.message是undefined
+                        const errorMsg = error.message || 'Unknown error occurred';
+                        alert('Failed to delete comment: ' + errorMsg);
+                    });
+            }
+        }
+
+        // 更新评论按钮状态的辅助函数
+        function updateCommentButtonState(date) {
+            const calendarDay = document.querySelector(`[data-date="${date}"]`);
+            if (calendarDay) {
+                const commentButton = calendarDay.querySelector('.comment-button');
+                if (commentButton) {
+                    // 清除评论数据，因为评论已被删除
+                    const updatedComments = '';
+                    const updatedCommentArray = [];
+
+                    // 更新评论图标
+                    const bubblePlusIcon = commentButton.querySelector('.icon-tabler-bubble-plus');
+                    const messageCircleIcon = commentButton.querySelector('.icon-tabler-message-circle');
+
+                    // 更新评论按钮上的数据属性
+                    commentButton.dataset.comments = updatedComments;
+                    commentButton.setAttribute('data-comments', updatedComments);
+                    commentButton.dataset.commentsJson = JSON.stringify(updatedCommentArray);
+
+                    // 无评论时显示气泡加号图标
+                    if (bubblePlusIcon) bubblePlusIcon.style.display = 'block';
+                    if (messageCircleIcon) messageCircleIcon.style.display = 'none';
+                    commentButton.classList.remove('has-comments');
+                    commentButton.classList.add('no-comments');
+                }
+            }
+        }
+
+        // 隐藏评论编辑模态框
+        function hideCommentModal() {
+            const modalBackdrop = document.getElementById('modalBackdrop');
+            const commentModal = document.getElementById('commentModal');
+
+            // 隐藏模态框
+            commentModal.classList.remove('show');
+            setTimeout(() => {
+                commentModal.style.display = 'none';
+            }, 300);
+
+            // 隐藏模态框背景
+            modalBackdrop.classList.remove('show');
+            setTimeout(() => {
+                modalBackdrop.style.display = 'none';
+            }, 300);
+        }
+
+        // 保存评论
+        function saveComment() {
+            const date = document.getElementById('commentDate').value;
+            const newCommentContent = document.getElementById('newCommentContent').value;
+
+            // 检查新评论是否为空
+            if (!newCommentContent.trim()) {
+                // 如果新评论为空，直接关闭模态框
+                hideCommentModal();
+                return;
+            }
+
+            // 发送POST请求保存单个评论
+            fetch('/expenses/comments', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ date: date, content: newCommentContent.trim() })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // 隐藏评论模态框
+                        hideCommentModal();
+
+                        // 更新评论按钮状态
+                        const calendarDay = document.querySelector(`[data-date="${date}"]`);
+                        if (calendarDay) {
+                            const commentButton = calendarDay.querySelector('.comment-button');
+                            if (commentButton) {
+                                // 更新评论按钮的属性
+                                commentButton.dataset.comments = newCommentContent.trim();
+                                commentButton.dataset.commentsJson = JSON.stringify([{ id: data.commentId || 'temp', content: newCommentContent.trim() }]);
+
+                                // 更新图标显示
+                                const bubblePlusIcon = commentButton.querySelector('.icon-tabler-bubble-plus');
+                                const messageCircleIcon = commentButton.querySelector('.icon-tabler-message-circle');
+
+                                if (bubblePlusIcon) bubblePlusIcon.style.display = 'none';
+                                if (messageCircleIcon) messageCircleIcon.style.display = 'block';
+
+                                // 更新CSS类
+                                commentButton.classList.remove('no-comments');
+                                commentButton.classList.add('has-comments');
+                            }
+                        }
+
+                        // 刷新当前日期的评论（可选，用于确保评论列表也更新）
+                        const buttons = document.querySelectorAll(`[data-date="${date}"]`);
+                        if (buttons.length > 0) {
+                            // 获取日期的评论按钮
+                            const commentButton = buttons[0].querySelector('.comment-button');
+                            if (commentButton) {
+                                // 点击评论按钮重新加载评论
+                                commentButton.click();
+                            }
+                        }
+                    } else {
+                        console.error('Failed to save comment:', data.message);
+                        alert('Failed to save comment: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error saving comment:', error);
+                    alert('Failed to save comment: ' + error.message);
+                });
+        }
+
+
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 模态框相关事件
+            const modalBackdrop = document.getElementById('modalBackdrop');
+            const expenseModal = document.getElementById('expenseModal');
+            const closeModal = document.getElementById('closeModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+
+            // 评论模态框关闭事件
+            const closeCommentModal = document.getElementById('closeCommentModal');
+            const closeCommentModalBtn = document.getElementById('closeCommentModalBtn');
+            const saveCommentBtn = document.getElementById('saveCommentBtn');
+
+            closeCommentModal.addEventListener('click', hideCommentModal);
+            closeCommentModalBtn.addEventListener('click', hideCommentModal);
+            saveCommentBtn.addEventListener('click', saveComment);
+
+            // 绑定访问记录按钮点击事件
+            // 获取所有日期数字容器
+            const dayNumbers = document.querySelectorAll('.day-number');
+            dayNumbers.forEach(container => {
+                // 检查是否有访问记录图标
+                const visitIcon = container.querySelector('.visit-icon');
+                if (visitIcon) {
+                    // 为日期数字容器添加点击事件
+                    container.addEventListener('click', function (e) {
+                        // 只在点击日期数字或图标时触发，避免点击其他按钮时触发
+                        if (e.target === container || e.target.tagName === 'SPAN' || e.target === visitIcon) {
+                            const dateString = visitIcon.getAttribute('data-date');
+
+                            // 发送请求切换访问记录状态
+                            fetch('/api/visitlogs/toggle', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ date: dateString })
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    // 更新图标状态
+                                    if (data.hasVisitLog) {
+                                        visitIcon.style.display = 'inline-block';
+                                        visitIcon.style.color = '#f25426';
+                                    } else {
+                                        visitIcon.style.display = 'none';
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error toggling visit:', error);
+                                    alert('Failed to toggle visit record: ' + error.message);
+                                });
+                        }
+                    });
+                }
+            });
+
+            // 绑定删除评论按钮事件
+            const deleteCommentBtn = document.getElementById('deleteCommentBtn');
+            deleteCommentBtn.addEventListener('click', handleDeleteComment);
+
+            // 点击模态框外部关闭
+            modalBackdrop.addEventListener('click', function () {
+                hideExpenseModal();
+                hideCommentModal();
+            });
+
+            // 为支出项添加点击事件，用于切换确认状态
+            const expenses = document.querySelectorAll('.event');
+            expenses.forEach(expense => {
+                expense.addEventListener('click', (e) => {
+                    e.stopPropagation(); // 阻止冒泡，避免触发日历天的点击事件
+                    const expenseId = expense.getAttribute('data-expense-id');
+
+                    // 发送请求切换确认状态
+                    fetch(`/expenses/toggle-confirmation/${expenseId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                // 更新UI样式
+                                if (data.confirmed) {
+                                    expense.classList.add('confirmed');
+                                } else {
+                                    expense.classList.remove('confirmed');
+                                }
+                            } else {
+                                alert('切换确认状态失败: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('切换确认状态出错:', error);
+                            alert('切换确认状态失败，请稍后重试');
+                        });
+                });
+
+                // 鼠标悬停事件 - 显示支出详情的tooltip
+                expense.addEventListener('mouseenter', function (e) {
+                    const title = this.querySelector('.event-title').textContent;
+                    const amount = this.querySelector('.event-amount').textContent;
+                    const note = this.querySelector('.event-note')?.textContent || '';
+                    const categoryName = this.querySelector('.event-category-name')?.textContent || 'Unknown Category';
+
+                    // 构建tooltip内容
+                    let tooltipContent = `Title: ${title}\nAmount: ${amount}\nCategory: ${categoryName}`;
+                    const channel = this.querySelector('.event-channel')?.textContent || '';
+                    tooltipContent += `\nChannel: ${channel}`;
+                    const paymentMethod = this.querySelector('.event-payment-method')?.textContent || '';
+                    tooltipContent += `\nPayment Method: ${paymentMethod}`;
+                    if (note) {
+                        tooltipContent += `\nNote: ${note}`;
+                    }
+
+                    // 清除tooltip内容并添加支出详情
+                    tooltip.innerHTML = '';
+                    tooltip.appendChild(arrow);
+                    const textNode = document.createTextNode(tooltipContent);
+                    tooltip.appendChild(textNode);
+                    tooltip.style.display = 'block';
+
+                    // 定位tooltip - 考虑页面滚动和边界情况
+                    const rect = this.getBoundingClientRect();
+                    const tooltipWidth = tooltip.offsetWidth || 200; // 默认宽度
+                    const tooltipHeight = tooltip.offsetHeight || 50; // 默认高度
+                    const arrowSize = 8;
+
+                    // 计算位置（考虑页面滚动）
+                    let left = rect.left + window.scrollX + rect.width / 2 - tooltipWidth / 2;
+                    let top = rect.top + window.scrollY - tooltipHeight - arrowSize - 5;
+                    let isAbove = true;
+
+                    // 确保tooltip不会超出页面左侧边界
+                    if (left < 10) {
+                        left = 10;
+                    }
+
+                    // 确保tooltip不会超出页面右侧边界
+                    if (left + tooltipWidth > window.innerWidth - 10) {
+                        left = window.innerWidth - tooltipWidth - 10;
+                    }
+
+                    // 如果tooltip超出页面顶部边界，则显示在event下方
+                    if (top < 10 + window.scrollY) {
+                        top = rect.bottom + window.scrollY + arrowSize + 5;
+                        isAbove = false;
+                    }
+
+                    tooltip.style.left = `${left}px`;
+                    tooltip.style.top = `${top}px`;
+
+                    // 定位箭头
+                    const arrowLeft = rect.left + window.scrollX + rect.width / 2 - left - arrowSize;
+                    arrow.style.left = `${arrowLeft}px`;
+
+                    if (isAbove) {
+                        arrow.style.bottom = `-${arrowSize}px`;
+                        arrow.style.top = 'auto';
+                        arrow.style.borderTopColor = 'rgba(0, 0, 0, 0.9)';
+                        arrow.style.borderBottomColor = 'transparent';
+                    } else {
+                        arrow.style.top = `-${arrowSize}px`;
+                        arrow.style.bottom = 'auto';
+                        arrow.style.borderBottomColor = 'rgba(0, 0, 0, 0.9)';
+                        arrow.style.borderTopColor = 'transparent';
+                    }
+                });
+
+                // 鼠标离开事件 - 隐藏tooltip
+                expense.addEventListener('mouseleave', function () {
+                    tooltip.style.display = 'none';
+                });
+            });
+
+            // 为评论按钮添加点击事件
+            const commentButtons = document.querySelectorAll('.comment-button');
+
+            // 创建tooltip元素
+            let tooltip = document.createElement('div');
+            tooltip.className = 'custom-tooltip';
+            tooltip.style.cssText = `
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        z-index: 10000;
+        pointer-events: none;
+        max-width: 300px;
+        display: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    `;
+
+            // 创建箭头元素
+            const arrow = document.createElement('div');
+            arrow.className = 'tooltip-arrow';
+            arrow.style.cssText = `
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-top: 8px solid rgba(0, 0, 0, 0.9);
+    `;
+            tooltip.appendChild(arrow);
+
+            document.body.appendChild(tooltip);
+
+            commentButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation(); // 阻止冒泡，避免触发日历天的点击事件
+                    const dateString = button.closest('.calendar-day').getAttribute('data-date');
+                    const comments = button.getAttribute('data-comments') || '';
+                    const commentsJson = button.getAttribute('data-comments-json') || '[]';
+                    showCommentModal(dateString, comments, commentsJson);
+                });
+
+                // 鼠标悬停事件 - 显示tooltip
+                button.addEventListener('mouseenter', function (e) {
+                    const comments = this.getAttribute('data-comments');
+                    if (comments) {
+                        // 清除tooltip内容并添加评论文本
+                        tooltip.innerHTML = '';
+                        tooltip.appendChild(arrow);
+                        const textNode = document.createTextNode(comments);
+                        tooltip.appendChild(textNode);
+                        tooltip.style.display = 'block';
+
+                        // 定位tooltip - 考虑页面滚动和边界情况
+                        const rect = this.getBoundingClientRect();
+                        const tooltipWidth = tooltip.offsetWidth || 200; // 默认宽度
+                        const tooltipHeight = tooltip.offsetHeight || 50; // 默认高度
+                        const arrowSize = 8;
+
+                        // 计算位置（考虑页面滚动）
+                        let left = rect.left + window.scrollX + rect.width / 2 - tooltipWidth / 2;
+                        let top = rect.top + window.scrollY - tooltipHeight - arrowSize - 5;
+                        let isAbove = true;
+
+                        // 确保tooltip不会超出页面左侧边界
+                        if (left < 10) {
+                            left = 10;
+                        }
+
+                        // 确保tooltip不会超出页面右侧边界
+                        if (left + tooltipWidth > window.innerWidth - 10) {
+                            left = window.innerWidth - tooltipWidth - 10;
+                        }
+
+                        // 如果tooltip超出页面顶部边界，则显示在图标下方
+                        if (top < 10 + window.scrollY) {
+                            top = rect.bottom + window.scrollY + arrowSize + 5;
+                            isAbove = false;
+                        }
+
+                        tooltip.style.left = `${left}px`;
+                        tooltip.style.top = `${top}px`;
+
+                        // 定位箭头
+                        const arrowLeft = rect.left + window.scrollX + rect.width / 2 - left - arrowSize;
+                        arrow.style.left = `${arrowLeft}px`;
+
+                        if (isAbove) {
+                            arrow.style.bottom = `-${arrowSize}px`;
+                            arrow.style.top = 'auto';
+                            arrow.style.borderTopColor = 'rgba(0, 0, 0, 0.9)';
+                            arrow.style.borderBottomColor = 'transparent';
+                        } else {
+                            arrow.style.top = `-${arrowSize}px`;
+                            arrow.style.bottom = 'auto';
+                            arrow.style.borderBottomColor = 'rgba(0, 0, 0, 0.9)';
+                            arrow.style.borderTopColor = 'transparent';
+                        }
+                    }
+                });
+
+                // 鼠标离开事件 - 隐藏tooltip
+                button.addEventListener('mouseleave', function () {
+                    tooltip.style.display = 'none';
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>ß

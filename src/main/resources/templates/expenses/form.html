@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Expense Tracker')}">
+    <style>
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-check {
+            margin-bottom: 1rem;
+        }
+        
+        .form-footer {
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{layout :: div(content=~{::content}, activePage='expenses')}">
+    <div th:fragment="content" class="content">
+        <!-- Page Content -->
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <h2 class="page-title" th:text="${expense.id != null ? 'Edit Expense' : 'Add Expense'}">Add Expense</h2>
+                    </div>
+                    <div class="col-auto ms-auto d-print-none">
+                        <div class="btn-list">
+                            <a href="/expenses" class="btn btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="5 12 9 16 19 6"></polyline>
+                                </svg>
+                                Back to list
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row row-deck row-cards">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title" th:text="${expense.id != null ? 'Edit Expense' : 'New Expense'}">New Expense</h3>
+                            </div>
+                            <div class="card-body">
+                                <form th:action="@{/expenses/save}" th:object="${expense}" method="post">
+                                    <input type="hidden" th:field="*{id}" th:if="${expense.id != null}"/>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Date</label>
+                                        <input type="date" th:field="*{date}" class="form-control" required>
+                                        <div class="form-text">The date when the expense occurred.</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Sort</label>
+                                        <input type="number" th:field="*{sort}" class="form-control" placeholder="0" required>
+                                        <div class="form-text">Sort order for this expense (lower numbers appear first).</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Title</label>
+                                        <input type="text" th:field="*{title}" class="form-control" placeholder="Enter expense title" required>
+                                        <div class="form-text">Brief description of the expense.</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Amount</label>
+                                        <input type="number" th:field="*{amount}" class="form-control" placeholder="0.00" step="0.01" required>
+                                        <div class="form-text">The amount spent.</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Category</label>
+                                        <select th:field="*{category.id}" class="form-control" required>
+                                            <option value="">Select a category</option>
+                                            <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+                                        </select>
+                                        <div class="form-text">The category this expense belongs to.</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Channel</label>
+                                        <select th:field="*{channel.id}" class="form-control" required>
+                                            <option value="">Select a channel</option>
+                                            <option th:each="channel : ${channels}" th:value="${channel.id}" th:text="${channel.name}"></option>
+                                        </select>
+                                        <div class="form-text">The channel through which the expense was made.</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Payment Method</label>
+                                        <div class="form-selectgroup form-selectgroup-boxes d-flex flex-column">
+                                            <label class="form-selectgroup-item flex-fill" th:each="payment : ${payments}">
+                                                <input type="radio" th:field="*{payment.id}" th:value="${payment.id}" class="form-selectgroup-input" th:checked="${expense.payment?.id == payment.id}">
+                                                <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                                    <div class="me-3">
+                                                        <span class="form-selectgroup-check"></span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="payment payment-xs me-2" th:classappend="${payment.cssClass ?: 'payment-provider-' + #strings.toLowerCase(payment.name)}"></span>
+                                                        <span th:text="${payment.name}"></span>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="form-text">The payment method used.</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Note</label>
+                                        <textarea th:field="*{note}" class="form-control" rows="3" placeholder="Enter additional notes"></textarea>
+                                        <div class="form-text">Optional notes about the expense.</div>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input type="checkbox" th:field="*{confirmed}" class="form-check-input">
+                                        <label class="form-check-label">Confirmed</label>
+                                        <div class="form-text">Mark this expense as confirmed.</div>
+                                    </div>
+
+                                    <div class="form-footer">
+                                        <button type="submit" class="btn btn-sm btn-primary" th:text="${expense.id != null ? 'Update Expense' : 'Create Expense'}">Create Expense</button>
+                                        <a href="/expenses" class="btn btn-sm btn-secondary">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Best Practices</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="markdown">
+                                    <h4>Expense Entry Tips</h4>
+                                    <ul>
+                                        <li>Use clear, descriptive titles for your expenses</li>
+                                        <li>Always include the exact amount</li>
+                                        <li>Select the most appropriate category</li>
+                                        <li>Enter the correct date when the expense occurred</li>
+                                        <li>Add notes for additional context</li>
+                                        <li>Mark as confirmed once verified</li>
+                                    </ul>
+
+                                    <h4>Organization Tips</h4>
+                                    <ul>
+                                        <li>Record expenses as soon as possible</li>
+                                        <li>Use consistent naming conventions</li>
+                                        <li>Review and categorize regularly</li>
+                                        <li>Use channels to track how you learned about the expense</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Common Expenses</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="markdown">
+                                    <ul>
+                                        <li><strong>Food & Dining</strong> - Restaurants, groceries, coffee</li>
+                                        <li><strong>Transportation</strong> - Fuel, public transit, rideshare</li>
+                                        <li><strong>Housing</strong> - Rent, mortgage, utilities</li>
+                                        <li><strong>Entertainment</strong> - Movies, games, events</li>
+                                        <li><strong>Shopping</strong> - Clothing, electronics, household items</li>
+                                        <li><strong>Healthcare</strong> - Doctor visits, medications, insurance</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

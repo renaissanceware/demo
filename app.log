@@ -1,0 +1,301 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::staticFieldBase has been called by com.google.inject.internal.aop.HiddenClassDefiner (file:/Users/xuxiaocheng/.m2/wrapper/dists/apache-maven-3.9.11/a2d47e15/lib/guice-5.1.0-classes.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.inject.internal.aop.HiddenClassDefiner
+WARNING: sun.misc.Unsafe::staticFieldBase will be removed in a future release
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.example:demo >--------------------------
+[INFO] Building demo 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.5.7:run (default-cli) > test-compile @ demo >>>
+[WARNING] The artifact mysql:mysql-connector-java:jar:8.0.33 has been relocated to com.mysql:mysql-connector-j:jar:8.0.33: MySQL Connector/J artifacts moved to reverse-DNS compliant Maven 2+ coordinates.
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ demo ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 7 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ demo ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ demo ---
+[INFO] skip non existing resourceDirectory /Users/xuxiaocheng/Demo/demo/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ demo ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot:3.5.7:run (default-cli) < test-compile @ demo <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.5.7:run (default-cli) @ demo ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.5.7)
+
+2025-11-25T16:25:32.807+08:00  INFO 17984 --- [demo] [           main] com.example.demo.DemoApplication         : Starting DemoApplication using Java 25.0.1 with PID 17984 (/Users/xuxiaocheng/Demo/demo/target/classes started by xuxiaocheng in /Users/xuxiaocheng/Demo/demo)
+2025-11-25T16:25:32.808+08:00  INFO 17984 --- [demo] [           main] com.example.demo.DemoApplication         : No active profile set, falling back to 1 default profile: "default"
+2025-11-25T16:25:32.966+08:00  INFO 17984 --- [demo] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-25T16:25:32.986+08:00  INFO 17984 --- [demo] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 16 ms. Found 2 JPA repository interfaces.
+2025-11-25T16:25:33.102+08:00  INFO 17984 --- [demo] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-25T16:25:33.107+08:00  INFO 17984 --- [demo] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-25T16:25:33.107+08:00  INFO 17984 --- [demo] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.48]
+2025-11-25T16:25:33.122+08:00  INFO 17984 --- [demo] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-25T16:25:33.122+08:00  INFO 17984 --- [demo] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 300 ms
+2025-11-25T16:25:33.176+08:00  INFO 17984 --- [demo] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-25T16:25:33.187+08:00  INFO 17984 --- [demo] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.33.Final
+2025-11-25T16:25:33.194+08:00  INFO 17984 --- [demo] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-25T16:25:33.260+08:00  INFO 17984 --- [demo] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-25T16:25:33.267+08:00  INFO 17984 --- [demo] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-25T16:25:33.435+08:00  INFO 17984 --- [demo] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@51d8f2f2
+2025-11-25T16:25:33.435+08:00  INFO 17984 --- [demo] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-25T16:25:33.484+08:00  WARN 17984 --- [demo] [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-11-25T16:25:33.490+08:00  INFO 17984 --- [demo] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.4.3
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-25T16:25:33.715+08:00  INFO 17984 --- [demo] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-25T16:25:33.861+08:00  INFO 17984 --- [demo] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-25T16:25:33.947+08:00  INFO 17984 --- [demo] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-11-25T16:25:34.094+08:00  WARN 17984 --- [demo] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-25T16:25:34.100+08:00  INFO 17984 --- [demo] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2025-11-25T16:25:34.187+08:00  INFO 17984 --- [demo] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-25T16:25:34.190+08:00  INFO 17984 --- [demo] [           main] com.example.demo.DemoApplication         : Started DemoApplication in 1.489 seconds (process running for 1.576)
+2025-11-25T16:25:34.668+08:00  INFO 17984 --- [demo] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-25T16:25:34.668+08:00  INFO 17984 --- [demo] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-25T16:25:34.669+08:00  INFO 17984 --- [demo] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+DEBUG: showCalendar method called
+DEBUG: Input parameters - year: null, month: null
+DEBUG: Current date: 2025-11-25
+DEBUG: Calculated currentYear: 2025, currentMonth: 11
+DEBUG: First day of month: 2025-11-01, Last day of month: 2025-11-30
+DEBUG: Date range - start: 2025-11-01T00:00, end: 2025-11-30T23:59:59
+Hibernate: 
+    select
+        e1_0.id,
+        e1_0.amount,
+        e1_0.category_id,
+        e1_0.created_at,
+        e1_0.expense_date,
+        e1_0.notes,
+        e1_0.title,
+        e1_0.updated_at 
+    from
+        expenses e1_0 
+    where
+        e1_0.expense_date between ? and ?
+DEBUG: Retrieved 3 expenses for the date range
+DEBUG: Added expense: 1 (1.00) on 2025-11-20
+DEBUG: Added expense: 2 (2.00) on 2025-11-22
+DEBUG: Added expense: 3 (3.00) on 2025-11-23
+DEBUG: Expenses grouped by date. Total groups: 3
+DEBUG: First day of month weekday: SATURDAY, offset: 6
+DEBUG: Previous month last day: 2025-10-31, days: 31
+DEBUG: Added 6 days from previous month
+DEBUG: Days in current month: 30
+DEBUG: Adding 1 expenses for 2025-11-20
+DEBUG: Adding 1 expenses for 2025-11-22
+DEBUG: Adding 1 expenses for 2025-11-23
+DEBUG: Added 30 days from current month
+DEBUG: Adding 6 days from next month to fill grid
+DEBUG: Total calendar days generated: 42
+DEBUG: Month name: November
+DEBUG: Adding attributes to model...
+DEBUG: Model attributes added successfully
+DEBUG: Returning view name: expenses/calendar
+2025-11-25T16:25:34.839+08:00 ERROR 17984 --- [demo] [nio-8080-exec-1] org.thymeleaf.TemplateEngine             : [THYMELEAF][http-nio-8080-exec-1] Exception processing template "expenses/calendar": An error happened during template parsing (template: "class path resource [templates/expenses/calendar.html]")
+
+org.thymeleaf.exceptions.TemplateInputException: An error happened during template parsing (template: "class path resource [templates/expenses/calendar.html]")
+	at org.thymeleaf.templateparser.markup.AbstractMarkupTemplateParser.parse(AbstractMarkupTemplateParser.java:241) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.templateparser.markup.AbstractMarkupTemplateParser.parseStandalone(AbstractMarkupTemplateParser.java:100) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.TemplateManager.parseAndProcess(TemplateManager.java:666) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.TemplateEngine.process(TemplateEngine.java:1103) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.TemplateEngine.process(TemplateEngine.java:1077) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.spring6.view.ThymeleafView.renderFragment(ThymeleafView.java:372) ~[thymeleaf-spring6-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.spring6.view.ThymeleafView.render(ThymeleafView.java:192) ~[thymeleaf-spring6-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.render(DispatcherServlet.java:1438) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.DispatcherServlet.processDispatchResult(DispatcherServlet.java:1168) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1106) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.48.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.48.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.12.jar:6.2.12]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.12.jar:6.2.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.12.jar:6.2.12]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.12.jar:6.2.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.12.jar:6.2.12]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.12.jar:6.2.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:88) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1774) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:973) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:491) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at java.base/java.lang.Thread.run(Thread.java:1474) ~[na:na]
+Caused by: org.attoparser.ParseException: Could not parse as expression: "${currentMonthName} ${currentYear}" (template: "expenses/calendar" - line 32, col 42)
+	at org.attoparser.MarkupParser.parseDocument(MarkupParser.java:393) ~[attoparser-2.0.7.RELEASE.jar:2.0.7.RELEASE]
+	at org.attoparser.MarkupParser.parse(MarkupParser.java:257) ~[attoparser-2.0.7.RELEASE.jar:2.0.7.RELEASE]
+	at org.thymeleaf.templateparser.markup.AbstractMarkupTemplateParser.parse(AbstractMarkupTemplateParser.java:230) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	... 48 common frames omitted
+Caused by: org.thymeleaf.exceptions.TemplateProcessingException: Could not parse as expression: "${currentMonthName} ${currentYear}" (template: "expenses/calendar" - line 32, col 42)
+	at org.thymeleaf.standard.expression.StandardExpressionParser.parseExpression(StandardExpressionParser.java:131) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.standard.expression.StandardExpressionParser.parseExpression(StandardExpressionParser.java:62) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.standard.expression.StandardExpressionParser.parseExpression(StandardExpressionParser.java:44) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.EngineEventUtils.parseAttributeExpression(EngineEventUtils.java:220) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.EngineEventUtils.computeAttributeExpression(EngineEventUtils.java:207) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.standard.processor.AbstractStandardExpressionAttributeTagProcessor.doProcess(AbstractStandardExpressionAttributeTagProcessor.java:125) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.processor.element.AbstractAttributeTagProcessor.doProcess(AbstractAttributeTagProcessor.java:74) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.processor.element.AbstractElementTagProcessor.process(AbstractElementTagProcessor.java:95) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.util.ProcessorConfigurationUtils$ElementTagProcessorWrapper.process(ProcessorConfigurationUtils.java:633) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.ProcessorTemplateHandler.handleOpenElement(ProcessorTemplateHandler.java:1314) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.OpenElementTag.beHandled(OpenElementTag.java:205) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.Model.process(Model.java:282) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.ProcessorTemplateHandler.handleOpenElement(ProcessorTemplateHandler.java:1587) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.OpenElementTag.beHandled(OpenElementTag.java:205) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.Model.process(Model.java:282) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.ProcessorTemplateHandler.handleOpenElement(ProcessorTemplateHandler.java:1587) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.TemplateHandlerAdapterMarkupHandler.handleOpenElementEnd(TemplateHandlerAdapterMarkupHandler.java:304) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.templateparser.markup.InlinedOutputExpressionMarkupHandler$InlineMarkupAdapterPreProcessorHandler.handleOpenElementEnd(InlinedOutputExpressionMarkupHandler.java:278) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.standard.inline.OutputExpressionInlinePreProcessorHandler.handleOpenElementEnd(OutputExpressionInlinePreProcessorHandler.java:186) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.templateparser.markup.InlinedOutputExpressionMarkupHandler.handleOpenElementEnd(InlinedOutputExpressionMarkupHandler.java:124) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.attoparser.HtmlElement.handleOpenElementEnd(HtmlElement.java:109) ~[attoparser-2.0.7.RELEASE.jar:2.0.7.RELEASE]
+	at org.attoparser.HtmlMarkupHandler.handleOpenElementEnd(HtmlMarkupHandler.java:297) ~[attoparser-2.0.7.RELEASE.jar:2.0.7.RELEASE]
+	at org.attoparser.MarkupEventProcessorHandler.handleOpenElementEnd(MarkupEventProcessorHandler.java:402) ~[attoparser-2.0.7.RELEASE.jar:2.0.7.RELEASE]
+	at org.attoparser.ParsingElementMarkupUtil.parseOpenElement(ParsingElementMarkupUtil.java:159) ~[attoparser-2.0.7.RELEASE.jar:2.0.7.RELEASE]
+	at org.attoparser.MarkupParser.parseBuffer(MarkupParser.java:710) ~[attoparser-2.0.7.RELEASE.jar:2.0.7.RELEASE]
+	at org.attoparser.MarkupParser.parseDocument(MarkupParser.java:301) ~[attoparser-2.0.7.RELEASE.jar:2.0.7.RELEASE]
+	... 50 common frames omitted
+
+2025-11-25T16:25:34.842+08:00 ERROR 17984 --- [demo] [nio-8080-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.thymeleaf.exceptions.TemplateInputException: An error happened during template parsing (template: "class path resource [templates/expenses/calendar.html]")] with root cause
+
+org.thymeleaf.exceptions.TemplateProcessingException: Could not parse as expression: "${currentMonthName} ${currentYear}" (template: "expenses/calendar" - line 32, col 42)
+	at org.thymeleaf.standard.expression.StandardExpressionParser.parseExpression(StandardExpressionParser.java:131) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.standard.expression.StandardExpressionParser.parseExpression(StandardExpressionParser.java:62) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.standard.expression.StandardExpressionParser.parseExpression(StandardExpressionParser.java:44) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.EngineEventUtils.parseAttributeExpression(EngineEventUtils.java:220) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.EngineEventUtils.computeAttributeExpression(EngineEventUtils.java:207) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.standard.processor.AbstractStandardExpressionAttributeTagProcessor.doProcess(AbstractStandardExpressionAttributeTagProcessor.java:125) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.processor.element.AbstractAttributeTagProcessor.doProcess(AbstractAttributeTagProcessor.java:74) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.processor.element.AbstractElementTagProcessor.process(AbstractElementTagProcessor.java:95) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.util.ProcessorConfigurationUtils$ElementTagProcessorWrapper.process(ProcessorConfigurationUtils.java:633) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.ProcessorTemplateHandler.handleOpenElement(ProcessorTemplateHandler.java:1314) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.OpenElementTag.beHandled(OpenElementTag.java:205) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.Model.process(Model.java:282) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.ProcessorTemplateHandler.handleOpenElement(ProcessorTemplateHandler.java:1587) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.OpenElementTag.beHandled(OpenElementTag.java:205) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.Model.process(Model.java:282) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.ProcessorTemplateHandler.handleOpenElement(ProcessorTemplateHandler.java:1587) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.TemplateHandlerAdapterMarkupHandler.handleOpenElementEnd(TemplateHandlerAdapterMarkupHandler.java:304) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.templateparser.markup.InlinedOutputExpressionMarkupHandler$InlineMarkupAdapterPreProcessorHandler.handleOpenElementEnd(InlinedOutputExpressionMarkupHandler.java:278) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.standard.inline.OutputExpressionInlinePreProcessorHandler.handleOpenElementEnd(OutputExpressionInlinePreProcessorHandler.java:186) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.templateparser.markup.InlinedOutputExpressionMarkupHandler.handleOpenElementEnd(InlinedOutputExpressionMarkupHandler.java:124) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.attoparser.HtmlElement.handleOpenElementEnd(HtmlElement.java:109) ~[attoparser-2.0.7.RELEASE.jar:2.0.7.RELEASE]
+	at org.attoparser.HtmlMarkupHandler.handleOpenElementEnd(HtmlMarkupHandler.java:297) ~[attoparser-2.0.7.RELEASE.jar:2.0.7.RELEASE]
+	at org.attoparser.MarkupEventProcessorHandler.handleOpenElementEnd(MarkupEventProcessorHandler.java:402) ~[attoparser-2.0.7.RELEASE.jar:2.0.7.RELEASE]
+	at org.attoparser.ParsingElementMarkupUtil.parseOpenElement(ParsingElementMarkupUtil.java:159) ~[attoparser-2.0.7.RELEASE.jar:2.0.7.RELEASE]
+	at org.attoparser.MarkupParser.parseBuffer(MarkupParser.java:710) ~[attoparser-2.0.7.RELEASE.jar:2.0.7.RELEASE]
+	at org.attoparser.MarkupParser.parseDocument(MarkupParser.java:301) ~[attoparser-2.0.7.RELEASE.jar:2.0.7.RELEASE]
+	at org.attoparser.MarkupParser.parse(MarkupParser.java:257) ~[attoparser-2.0.7.RELEASE.jar:2.0.7.RELEASE]
+	at org.thymeleaf.templateparser.markup.AbstractMarkupTemplateParser.parse(AbstractMarkupTemplateParser.java:230) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.templateparser.markup.AbstractMarkupTemplateParser.parseStandalone(AbstractMarkupTemplateParser.java:100) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.engine.TemplateManager.parseAndProcess(TemplateManager.java:666) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.TemplateEngine.process(TemplateEngine.java:1103) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.TemplateEngine.process(TemplateEngine.java:1077) ~[thymeleaf-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.spring6.view.ThymeleafView.renderFragment(ThymeleafView.java:372) ~[thymeleaf-spring6-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.thymeleaf.spring6.view.ThymeleafView.render(ThymeleafView.java:192) ~[thymeleaf-spring6-3.1.3.RELEASE.jar:3.1.3.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.render(DispatcherServlet.java:1438) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.DispatcherServlet.processDispatchResult(DispatcherServlet.java:1168) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1106) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.48.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.2.12.jar:6.2.12]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.48.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.2.12.jar:6.2.12]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.12.jar:6.2.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.2.12.jar:6.2.12]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.12.jar:6.2.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.2.12.jar:6.2.12]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.2.12.jar:6.2.12]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:162) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:138) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:88) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1774) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:973) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:491) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.48.jar:10.1.48]
+	at java.base/java.lang.Thread.run(Thread.java:1474) ~[na:na]
+
+2025-11-25T16:25:34.849+08:00  WARN 17984 --- [demo] [nio-8080-exec-1] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.http.converter.HttpMessageNotWritableException: No converter for [class java.util.LinkedHashMap] with preset Content-Type 'text/html;charset=UTF-8']
+2025-11-25T16:27:58.238+08:00  INFO 17984 --- [demo] [ionShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-25T16:27:58.240+08:00  INFO 17984 --- [demo] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-25T16:27:58.242+08:00  INFO 17984 --- [demo] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-25T16:27:58.243+08:00  INFO 17984 --- [demo] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-25T16:27:58.245+08:00  INFO 17984 --- [demo] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  02:26 min
+[INFO] Finished at: 2025-11-25T16:27:58+08:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.5.7:run (default-cli) on project demo: Process terminated with exit code: 143 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

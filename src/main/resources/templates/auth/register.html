@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Register</title>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css" rel="stylesheet">
+    <style>
+        .brand img { max-height: 36px; }
+    </style>
+</head>
+<body>
+<div class="page page-center">
+    <div class="container-tight py-4">
+        <form class="card card-md" th:action="@{/register}" th:object="${user}" method="post">
+            <div class="card-body">
+                <div class="mb-4 text-center">
+                    <a href="/" class="navbar-brand brand">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="36" height="36" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M12 3l8 4v6a8 8 0 1 1 -16 0v-6z"></path>
+                        </svg>
+                    </a>
+                    <h2 class="card-title mt-2">Create new account</h2>
+                </div>
+
+                <!-- 全局错误/成功信息 -->
+                <div th:if="${errorMessage}" class="alert alert-danger">
+                    <span th:text="${errorMessage}"></span>
+                </div>
+                <div th:if="${successMessage}" class="alert alert-success">
+                    <span th:text="${successMessage}"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input type="text" class="form-control" th:field="*{username}" placeholder="Choose a username" required>
+                    <div th:if="${#fields.hasErrors('username')}" class="form-hint text-danger mt-1">
+                        <th:errors field="*{username}"></th:errors>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" th:field="*{email}" placeholder="you@example.com" required>
+                    <div th:if="${#fields.hasErrors('email')}" class="form-hint text-danger mt-1">
+                        <th:errors field="*{email}"></th:errors>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" th:field="*{password}" placeholder="Create a password" required>
+                    <div th:if="${#fields.hasErrors('password')}" class="form-hint text-danger mt-1">
+                        <th:errors field="*{password}"></th:errors>
+                    </div>
+                </div>
+
+                <div class="form-footer">
+                    <button type="submit" class="btn btn-primary w-100">Create account</button>
+                </div>
+
+                <div class="text-center text-muted mt-4">
+                    Already have an account? <a th:href="@{/login}">Sign in</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
+</body>
+</html>

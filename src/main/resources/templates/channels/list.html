@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Channel Management')}">
+    <style>
+        /* Channel table style */
+        .table-vcenter td, .table-vcenter th {
+            vertical-align: middle;
+            text-align: center;
+        }
+        
+        .table-sm {
+            font-size: 0.875rem;
+        }
+        
+        .table-active {
+            background-color: #f8f9fa;
+        }
+        
+        .btn-xs {
+            padding: 0 !important;
+            margin: 0 !important;
+            min-height: auto;
+            height: 1.25rem;
+            width: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .icon {
+            stroke-width: 2.5;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{layout :: div(content=~{::content}, activePage='channels')}">
+    <div th:fragment="content" class="content">
+        <!-- Page Content -->
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <h2 class="page-title">Channel Management</h2>
+                    </div>
+                    <div class="col-auto ms-auto d-print-none">
+                        <div class="btn-list">
+                            <a href="/channels/new" class="btn btn-sm btn-primary d-none d-sm-inline-block">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                     viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                     stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                Add Channel
+                            </a>
+                            <a href="/channels/new" class="btn btn-sm btn-primary d-sm-none btn-icon"
+                               aria-label="Add new channel">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                     viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                     stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row row-deck row-cards">
+                    <div class="col-md-4 col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Channels</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <th:block th:if="${channels.isEmpty()}">
+                                        <div class="col-12">
+                                            <div class="empty">
+                                                <div class="empty-img">
+                                                    <img src="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/assets/img/illustrations/missing-translation.svg"
+                                                         height="128" alt="">
+                                                </div>
+                                                <p class="empty-title">No channels found</p>
+                                                <p class="empty-subtitle text-muted">
+                                                    Get started by creating your first channel.
+                                                </p>
+                                                <div class="empty-action">
+                                                    <a href="/channels/new" class="btn btn-sm btn-primary">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24"
+                                                             height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                             stroke="currentColor" fill="none" stroke-linecap="round"
+                                                             stroke-linejoin="round">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                                        </svg>
+                                                        Add Channel
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </th:block>
+                                    <div th:each="channel : ${channels}" class="col-6">
+                                        <div class="row g-3 align-items-center">
+                                            <a th:href="@{/channels/edit/{id}(id=${channel.id})}" class="col-auto">
+                                                <span th:if="${channel.iconUrl}" class="avatar avatar-2" th:style="'background-image: url(' + ${channel.iconUrl} + ')'">
+                                                </span>
+                                                <span th:unless="${channel.iconUrl}" class="avatar avatar-2" style="background-color: #206bc4"></span>
+                                            </a>
+                                            <div class="col text-truncate">
+                                                <a th:href="@{/channels/edit/{id}(id=${channel.id})}" class="text-reset d-block text-truncate" style="text-decoration: none;">
+                                                    <span class="badge bg-blue-lt" th:text="${channel.name}" style="text-align: center !important; font-size: 0.75rem; padding: 0.25rem 0.5rem; margin: 0 !important;">Channel</span>
+                                                </a>
+                                                <div class="text-secondary text-truncate mt-n1" th:text="${channel.description ?: 'No description'}">Channel description</div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <a th:href="@{/channels/delete/{id}(id=${channel.id})}" class="btn btn-xs btn-icon btn-action" title="Delete" onclick="return confirm('Are you sure you want to delete this channel?')">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                        <line x1="4" y1="7" x2="20" y2="7"/>
+                                                        <line x1="10" y1="11" x2="10" y2="17"/>
+                                                        <line x1="14" y1="11" x2="14" y2="17"/>
+                                                        <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/>
+                                                        <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

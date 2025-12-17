@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Channel Management')}">
+    <style>
+        .icon-preview {
+            max-width: 32px;
+            max-height: 32px;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{layout :: div(content=~{::content}, activePage='channels')}">
+    <div th:fragment="content" class="content">
+        <!-- Page Content -->
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <h2 class="page-title" th:text="${channel.id != null ? 'Edit Channel' : 'Add Channel'}">Add Channel</h2>
+                    </div>
+                    <div class="col-auto ms-auto d-print-none">
+                        <div class="btn-list">
+                            <a href="/channels" class="btn btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="5 12 9 16 19 6"></polyline>
+                                </svg>
+                                Back to list
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row row-deck row-cards">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title" th:text="${channel.id != null ? 'Edit Channel' : 'New Channel'}">New Channel</h3>
+                            </div>
+                            <div class="card-body">
+                                <form th:action="@{/channels/save}" th:object="${channel}" method="post">
+                                    <input type="hidden" th:field="*{id}" th:if="${channel.id != null}"/>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Channel Name</label>
+                                        <input type="text" th:field="*{name}" class="form-control" placeholder="Enter channel name" required>
+                                        <div class="form-text">This name will be displayed throughout the application.</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Description</label>
+                                        <textarea th:field="*{description}" class="form-control" rows="3" placeholder="Enter channel description"></textarea>
+                                        <div class="form-text">Optional description to provide more details about this channel.</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Icon URL</label>
+                                        <input type="url" th:field="*{iconUrl}" class="form-control" placeholder="https://example.com/icon.png">
+                                        <div class="form-text">Optional URL to an icon image that represents this channel.</div>
+                                    </div>
+
+                                    <div class="form-footer">
+                                        <button type="submit" class="btn btn-sm btn-primary" th:text="${channel.id != null ? 'Update Channel' : 'Create Channel'}">Create Channel</button>
+                                        <a href="/channels" class="btn btn-sm btn-secondary">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Best Practices</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="markdown">
+                                    <h4>Channel Creation Tips</h4>
+                                    <ul>
+                                        <li>Use clear, descriptive names for your channels</li>
+                                        <li>Keep channel names short and memorable</li>
+                                        <li>Add descriptions to provide context</li>
+                                        <li>Use icons to make channels visually distinctive</li>
+                                    </ul>
+
+                                    <h4>Icon Guidelines</h4>
+                                    <ul>
+                                        <li>Use square images (recommended size: 24x24 pixels)</li>
+                                        <li>Choose icons that clearly represent the channel</li>
+                                        <li>Use transparent backgrounds for better appearance</li>
+                                        <li>Ensure icons are from trusted sources</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Common Channels</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="markdown">
+                                    <ul>
+                                        <li><strong>Email</strong> - Email communication</li>
+                                        <li><strong>Phone</strong> - Phone calls and messages</li>
+                                        <li><strong>Website</strong> - Website visitors</li>
+                                        <li><strong>Social Media</strong> - Social media platforms</li>
+                                        <li><strong>Referral</strong> - Referral sources</li>
+                                        <li><strong>Direct</strong> - Direct traffic</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

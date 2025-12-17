@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Expense Tracker')}">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener('DOMContentLoaded', function() {
+            var descriptions = document.querySelectorAll('.expense-description span');
+            descriptions.forEach(function(desc) {
+                if (desc.textContent.length > 10) {
+                    desc.textContent = desc.textContent.substring(0, 10) + '...';
+                }
+            });
+        });
+        /*]]>*/
+    </script>
+    <style>
+        /* Custom table column widths */
+        .col-date {
+            width: 110px;
+            min-width: 110px;
+            padding: 8px !important;
+            text-align: center !important;
+        }
+
+        .col-description {
+            width: auto;
+            min-width: 250px;
+            text-align: center !important;
+        }
+
+        .col-category {
+            width: 130px;
+            min-width: 130px;
+            padding: 8px !important;
+            text-align: center !important;
+        }
+
+        .col-amount {
+            width: 100px;
+            min-width: 100px;
+            padding: 8px !important;
+            text-align: center !important;
+        }
+
+        .col-actions {
+            width: 80px;
+            min-width: 80px;
+            padding: 8px !important;
+            text-align: center !important;
+        }
+
+        /* Make table more balanced */
+        .table-vcenter td {
+            padding: 8px 12px !important;
+            vertical-align: middle !important;
+            text-align: center !important;
+        }
+
+        .table-vcenter th {
+            padding: 10px 12px !important;
+            font-size: 0.9rem;
+            text-align: center !important;
+        }
+
+        /* All columns should be center-aligned as requested */
+        .table-vcenter td.col-description {
+            text-align: center !important;
+        }
+
+        /* Date column center alignment */
+        .table-vcenter td.col-date {
+            text-align: center !important;
+        }
+
+        /* Amount column center alignment for numbers */
+        .table-vcenter td.col-amount {
+            text-align: center !important;
+        }
+
+        /* Category column center alignment */
+        .table-vcenter td.col-category {
+            text-align: center !important;
+        }
+
+        /* Actions column center alignment */
+        .table-vcenter td.col-actions {
+            text-align: center !important;
+        }
+        
+        /* Ensure inner content is also centered with higher specificity */
+        table.table-vcenter td > div,
+        table.table-vcenter td > span {
+            text-align: center !important;
+            justify-content: center !important;
+            display: block !important;
+            margin: 0 auto !important;
+        }
+        
+        table.table-vcenter td .flex-fill {
+            display: flex !important;
+            flex-direction: column !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+            margin: 0 auto !important;
+        }
+        
+        table.table-vcenter td .d-flex {
+            justify-content: center !important;
+            text-align: center !important;
+            margin: 0 auto !important;
+        }
+        
+        table.table-vcenter td .font-weight-medium,
+        table.table-vcenter td .text-muted {
+            text-align: center !important;
+            display: block !important;
+            margin: 0 auto !important;
+        }
+
+        /* Enhanced Filter Section Styles */
+        .filter-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .filter-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        .filter-section:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-section .card-body {
+            padding: 0.75rem 1rem;
+            position: relative;
+        }
+
+        .filter-form {
+            gap: 0.5rem;
+            margin-bottom: 0;
+        }
+
+        .filter-form .form-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: color 0.2s ease;
+        }
+
+        .filter-form .form-label::before {
+            content: '';
+            width: 4px;
+            height: 4px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .filter-form .form-label:hover {
+            color: #3b82f6;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        .filter-form .form-control,
+        .filter-form .form-select {
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            padding: 0.375rem 0.5rem;
+            min-height: 2rem;
+            transition: all 0.2s ease;
+            background: #ffffff;
+            position: relative;
+        }
+
+        .filter-form .form-control:hover,
+        .filter-form .form-select:hover {
+            border-color: #cbd5e1;
+            transform: translateY(-0.5px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .filter-form .form-control:focus,
+        .filter-form .form-select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            transform: translateY(-1px);
+            outline: none;
+            background-color: #ffffff;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-end;
+            justify-content: flex-end;
+            height: 100%;
+            padding-bottom: 0.125rem;
+        }
+
+        .btn-filter {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.375rem 0.75rem;
+            transition: all 0.2s ease;
+            min-width: 60px;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-filter::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-filter:hover::before {
+            left: 100%;
+        }
+
+        .btn-filter:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-filter:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-clear {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            color: #64748b;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.375rem 0.75rem;
+            transition: all 0.2s ease;
+            min-width: 60px;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            justify-content: center;
+            position: relative;
+        }
+
+        .btn-clear:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #475569;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-clear:active {
+            transform: translateY(0);
+        }
+
+        /* Filter panel toggle button */
+        .filter-toggle {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 0.25rem;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        .filter-toggle:hover {
+            background: #ffffff;
+            border-color: #cbd5e1;
+            transform: scale(1.1);
+        }
+
+        .filter-toggle svg {
+            width: 0.75rem;
+            height: 0.75rem;
+            transition: transform 0.3s ease;
+        }
+
+        .filter-toggle.collapsed svg {
+            transform: rotate(180deg);
+        }
+
+        .subheader {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        .list-group-transparent .list-group-item {
+            background: transparent;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            margin-bottom: 0.125rem;
+            transition: all 0.2s ease;
+        }
+
+        .list-group-transparent .list-group-item:hover {
+            background-color: #f1f5f9;
+        }
+
+        .list-group-transparent .list-group-item.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .list-group-transparent .list-group-item.active:hover {
+            background-color: #2563eb;
+        }
+
+        .list-group-transparent .list-group-item .text-secondary {
+            font-size: 0.75rem;
+        }
+
+    </style>
+</head>
+<body>
+<div th:replace="~{layout :: div(content=~{::content}, activePage='expenses')}">
+    <div th:fragment="content" class="content">
+        <!-- Page Content -->
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <h2 class="page-title">Expense Management</h2>
+                    </div>
+                    <div class="col-auto ms-auto d-print-none">
+                        <div class="btn-list">
+                            <a href="/expenses/new" class="btn btn-sm btn-primary d-none d-sm-inline-block">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                     viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                     stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                Add Expense
+                            </a>
+                            <a href="/expenses/new" class="btn btn-sm btn-primary d-sm-none btn-icon"
+                               aria-label="Add new expense">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                     viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                     stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row g-4">
+                    <!-- Left sidebar with filters -->
+                    <div class="col-md-3">
+                        <form action="/expenses/filter" method="get" autocomplete="off" novalidate="">
+                            <div class="subheader mb-2">Category</div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="categoryId" id="allCategories" value="" th:checked="${selectedCategory == null or selectedCategory.isEmpty()}">
+                                    <label class="form-check-label" for="allCategories">
+                                        All Categories
+                                    </label>
+                                </div>
+                                <div th:each="category : ${categories}">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="categoryId" th:id="${'category-' + category.id}" th:value="${category.id}" th:checked="${selectedCategory == category.id}">
+                                        <label class="form-check-label" th:for="${'category-' + category.id}">
+                                            <span th:text="${category.name}">Games</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="subheader mb-2">Date Range</div>
+                            <div class="mb-3">
+                                <label class="form-label">From Date</label>
+                                <div class="input-group">
+                                    <div class="input-group-text">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="16"
+                                             height="16" viewBox="0 0 24 24" stroke-width="2"
+                                             stroke="currentColor" fill="none" stroke-linecap="round"
+                                             stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <rect x="4" y="5" width="16" height="16" rx="2"/>
+                                            <line x1="16" y1="3" x2="16" y2="7"/>
+                                            <line x1="8" y1="3" x2="8" y2="7"/>
+                                            <line x1="4" y1="11" x2="20" y2="11"/>
+                                        </svg>
+                                    </div>
+                                    <input type="date" name="startDate" class="form-control"
+                                           th:value="${param.startDate}">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">To Date</label>
+                                <div class="input-group">
+                                    <div class="input-group-text">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="16"
+                                             height="16" viewBox="0 0 24 24" stroke-width="2"
+                                             stroke="currentColor" fill="none" stroke-linecap="round"
+                                             stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <rect x="4" y="5" width="16" height="16" rx="2"/>
+                                            <line x1="16" y1="3" x2="16" y2="7"/>
+                                            <line x1="8" y1="3" x2="8" y2="7"/>
+                                            <line x1="4" y1="11" x2="20" y2="11"/>
+                                        </svg>
+                                    </div>
+                                    <input type="date" name="endDate" class="form-control"
+                                           th:value="${param.endDate}">
+                                </div>
+                            </div>
+                            
+                            <div class="subheader mb-2">Amount Range</div>
+                            <div class="row g-2 align-items-center mb-3">
+                                <div class="col">
+                                    <div class="input-group">
+                                        <span class="input-group-text">￥</span>
+                                        <input type="text" class="form-control" placeholder="from" name="minAmount" th:value="${param.minAmount}" autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="col-auto">—</div>
+                                <div class="col">
+                                    <div class="input-group">
+                                        <span class="input-group-text">￥</span>
+                                        <input type="text" class="form-control" placeholder="to" name="maxAmount" th:value="${param.maxAmount}" autocomplete="off">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-3">
+                                <button class="btn btn-primary w-100 mb-2" type="submit">
+                                    Apply Filters
+                                </button>
+                                <a href="/expenses" class="btn btn-link w-100">
+                                    Reset to defaults
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Main content with table -->
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Expenses</h3>
+                                <div class="card-actions">
+                                    <form action="/expenses/search" method="get" class="d-flex">
+                                        <div class="input-group">
+                                            <input type="text" name="title" class="form-control"
+                                                   placeholder="Search expenses..." th:value="${searchTerm}">
+                                            <button type="submit" class="btn btn-sm">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24"
+                                                     height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                     stroke="currentColor" fill="none" stroke-linecap="round"
+                                                     stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                    <circle cx="10" cy="10" r="7"></circle>
+                                                    <line x1="21" y1="21" x2="15" y2="15"></line>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-vcenter table-hover table-sm">
+                                    <thead>
+                                    <tr class="table-active">
+                                        <th class="col-date" style="text-align: center !important; width: 150px;">Date</th>
+                                        <th style="text-align: center !important; width: 70px;">Sort</th>
+                                        <th style="text-align: center !important; width: 200px;">Title</th>
+                                        <th style="text-align: center !important; width: 200px;">Note</th>
+                                        <th class="col-category" style="text-align: center !important; width: 150px;">Category</th>
+                                        <th class="col-amount" style="text-align: center !important; width: 100px;">Amount</th>
+                                        <th class="col-actions" style="text-align: center !important; width: 80px;">Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:if="${expenses.empty}">
+                                        <td colspan="7" class="text-center py-3">
+                                            <div class="empty">
+                                                <div class="empty-img" style="height: 80px;">
+                                                    <img src="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/assets/img/illustrations/missing-translation.svg"
+                                                         height="80" alt="">
+                                                </div>
+                                                <p class="empty-title m-1">No expenses found</p>
+                                                <p class="empty-subtitle text-muted m-1">
+                                                    Get started by adding your first expense.
+                                                </p>
+                                                <div class="empty-action mt-2">
+                                                    <a href="/expenses/new" class="btn btn-sm btn-primary">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-sm" width="16"
+                                                             height="16" viewBox="0 0 24 24" stroke-width="2"
+                                                             stroke="currentColor" fill="none" stroke-linecap="round"
+                                                             stroke-linejoin="round">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                                        </svg>
+                                                        Add Expense
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr th:each="expense : ${expenses}" style="height: 40px;">
+                                        <td style="text-align: center !important; padding: 0.25rem !important;">
+                                            <div th:text="${#temporals.format(expense.date, 'yyyy-MM-dd')}" style="text-align: center !important; display: block; font-size: 0.875rem; white-space: nowrap;">
+                                                2024-01-01
+                                            </div>
+                                        </td>
+                                        <td style="text-align: center !important; padding: 0.25rem !important;">
+                                            <span th:text="${expense.sort != null ? expense.sort : '-'}" 
+                                                  style="display: inline-block;
+                                                         width: 24px;
+                                                         height: 24px;
+                                                         line-height: 24px;
+                                                         border-radius: 50%;
+                                                         background-color: #e2e8f0;
+                                                         color: #475569;
+                                                         font-weight: 500;
+                                                         font-size: 0.75rem;
+                                                         text-align: center;
+                                                         vertical-align: middle;"></span>
+                                        </td>
+                                        <td style="text-align: center !important; padding: 0.25rem !important;">
+                                             <div style="text-align: center !important; display: block; font-weight: 500; font-size: 0.875rem;">
+                                                 <span th:text="${#strings.length(expense.title) > 35 ? #strings.substring(expense.title, 0, 35) + '...' : expense.title}">Title</span>
+                                             </div>
+                                         </td>
+                                        <td style="text-align: center !important; padding: 0.25rem !important;">
+                                            <div class="text-muted" style="text-align: center !important; display: block; font-size: 0.875rem;">
+                                                <span th:if="${expense.note}" th:text="${#strings.length(expense.note) > 35 ? #strings.substring(expense.note, 0, 35) + '...' : expense.note}">Note</span>
+                                                <span th:unless="${expense.note}" class="text-gray-400">-</span>
+                                            </div>
+                                        </td>
+                                        <td style="text-align: center !important; padding: 0.25rem !important;">
+                                            <div class="text-center" style="display: flex !important; justify-content: center !important; align-items: center !important; text-align: center !important;">
+                                                <span class="badge bg-blue-lt" th:text="${expense.category.name}" style="text-align: center !important; font-size: 0.75rem; padding: 0.25rem 0.5rem; margin: 0 auto !important;">Category</span>
+                                            </div>
+                                        </td>
+                                        <td style="text-align: center !important; padding: 0.25rem !important;">
+                                            <span
+                                                  th:text="'￥' + ${#numbers.formatDecimal(expense.amount, 1, 2)}" style="text-align: center !important; display: block; font-weight: 500; font-size: 0.875rem;">￥0.00</span>
+                                        </td>
+                                        <td style="text-align: center !important; padding: 0 !important; height: 100%;">
+                                            <div class="btn-list flex-nowrap" style="justify-content: center !important; gap: 0.125rem; margin: 0; padding: 0;">
+                                                <a th:href="@{/expenses/edit/{id}(id=${expense.id})}"
+                                                   class="btn btn-xs btn-icon btn-action" title="Edit" style="padding: 0 !important; margin: 0 !important; min-height: auto; height: 1.25rem; width: 1.25rem; display: flex; align-items: center; justify-content: center;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                        <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4"/>
+                                                        <line x1="13.5" y1="6.5" x2="17.5" y2="10.5"/>
+                                                    </svg>
+                                                </a>
+                                                <a th:href="@{/expenses/delete/{id}(id=${expense.id})}"
+                                                   class="btn btn-xs btn-icon btn-action" title="Delete" onclick="return confirm('Are you sure you want to delete this expense?')" style="padding: 0 !important; margin: 0 !important; min-height: auto; height: 1.25rem; width: 1.25rem; display: flex; align-items: center; justify-content: center;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                        <line x1="4" y1="7" x2="20" y2="7"/>
+                                                        <line x1="10" y1="11" x2="10" y2="17"/>
+                                                        <line x1="14" y1="11" x2="14" y2="17"/>
+                                                        <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/>
+                                                        <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Record Management')}">
+    <style>
+        /* Custom table column widths */
+        .col-date {
+            width: 90px;
+            min-width: 90px;
+            padding: 4px !important;
+            text-align: center !important;
+        }
+
+        .col-title {
+            width: 150px;
+            min-width: 150px;
+            padding: 4px !important;
+            text-align: center !important;
+        }
+
+        .col-amount {
+            width: 80px;
+            min-width: 80px;
+            padding: 4px !important;
+            text-align: center !important;
+        }
+
+        .col-type {
+            width: 70px;
+            min-width: 70px;
+            padding: 4px !important;
+            text-align: center !important;
+        }
+
+        .col-actions {
+            width: 60px;
+            min-width: 60px;
+            padding: 4px !important;
+            text-align: center !important;
+        }
+
+        /* Make table more compact */
+        .table-vcenter td {
+            padding: 4px 6px !important;
+            vertical-align: middle !important;
+            text-align: center !important;
+        }
+
+        .table-vcenter th {
+            padding: 6px 6px !important;
+            font-size: 0.8rem;
+            text-align: center !important;
+        }
+
+        /* All columns should be center-aligned */
+        .table-vcenter td.col-title {
+            text-align: center !important;
+        }
+
+        /* Date column center alignment */
+        .table-vcenter td.col-date {
+            text-align: center !important;
+        }
+
+        /* Amount column center alignment for numbers */
+        .table-vcenter td.col-amount {
+            text-align: center !important;
+        }
+
+        /* Type column center alignment */
+        .table-vcenter td.col-type {
+            text-align: center !important;
+        }
+
+        /* Actions column center alignment */
+        .table-vcenter td.col-actions {
+            text-align: center !important;
+        }
+        
+        /* Ensure inner content is also centered with higher specificity */
+        table.table-vcenter td > div,
+        table.table-vcenter td > span {
+            text-align: center !important;
+            justify-content: center !important;
+            display: block !important;
+            margin: 0 auto !important;
+        }
+        
+        table.table-vcenter td .flex-fill {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+            margin: 0 auto !important;
+        }
+        
+        table.table-vcenter td .d-flex {
+            justify-content: center !important;
+            text-align: center !important;
+            margin: 0 auto !important;
+        }
+        
+        table.table-vcenter td .font-weight-medium,
+        table.table-vcenter td .text-muted {
+            text-align: center !important;
+            display: block !important;
+            margin: 0 auto !important;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{layout :: div(content=~{::content}, activePage='home')}">
+    <div th:fragment="content" class="content">
+        <div class="page-header">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <h2 class="page-title">
+                            Record Management
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row">
+                    <!-- 左边表格：Income -->
+                    <div class="col-md-6 col-lg-5">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Income Records</h3>
+                                <div class="card-actions">
+                                    <div class="btn-list">
+                                        <button type="button" class="btn btn-xs btn-icon btn-action" onclick="addEmptyRow('income')" title="Add" style="padding: 0 !important; margin: 0 !important; min-height: auto; height: 1.25rem; width: 1.25rem; display: flex; align-items: center; justify-content: center;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-vcenter table-hover table-sm">
+                                    <thead>
+                                        <tr class="table-active">
+                                            <th class="col-title" style="text-align: center !important; width: 150px;">Title</th>
+                                            <th class="col-amount" style="text-align: center !important; width: 80px;">Amount</th>
+                                            <th class="col-type" style="text-align: center !important; width: 70px;">Type</th>
+                                            <th class="col-action" style="text-align: center !important; width: 60px;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:if="${records.![type == 'income'].empty}">
+                                            <td colspan="4" class="text-center py-3">
+                                                <div class="empty">
+                                                    <div class="empty-img" style="height: 80px;">
+                                                        <img src="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/assets/img/illustrations/missing-translation.svg" height="80" alt="">
+                                                    </div>
+                                                    <p class="empty-title m-1">No income records found</p>
+                                                    <p class="empty-subtitle text-muted m-1">No income records available.</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr th:each="record : ${records}" th:if="${record.type == 'income'}" style="height: 40px;">
+                                            <td class="col-title" style="text-align: center !important; padding: 0.25rem !important;">
+                                                <input type="text" class="form-control record-input title-input" 
+                                                       th:attr="data-id=${record.id}, data-field='title'" 
+                                                       th:value="${record.title}" 
+                                                       onblur="saveRecord(this)" 
+                                                       onkeypress="if(event.key === 'Enter') { saveRecord(this); this.blur(); }" 
+                                                       style="text-align: center; font-weight: 500; font-size: 0.875rem; padding: 4px; width: 100%;">
+                                            </td>
+                                            <td class="col-amount" style="text-align: center !important; padding: 0.25rem !important;">
+                                                <input type="number" step="0.01" min="0.01" class="form-control record-input amount-input text-black" 
+                                                       th:attr="data-id=${record.id}, data-field='amount'" 
+                                                       th:value="${record.amount}" 
+                                                       onblur="saveRecord(this)" 
+                                                       onkeypress="if(event.key === 'Enter') { saveRecord(this); this.blur(); }" 
+                                                       style="text-align: center; font-weight: 500; font-size: 0.875rem; padding: 4px; width: 100%;">
+                                            </td>
+                                            <td class="col-type" style="text-align: center !important; padding: 0.25rem !important; width: 70px;">
+                                                <span th:class="'badge ' + (${record.type == 'income'} ? 'bg-red-lt' : 'bg-green-lt')" 
+                                                      style="text-align: center !important; display: inline-block; font-size: 0.75rem; padding: 0.25rem 0.5rem;" 
+                                                      th:text="${record.type == 'income' ? 'Income' : 'Expense'}">
+                                                    Income
+                                                </span>
+                                            </td>
+                                            <td class="col-action" style="text-align: center !important; padding: 0 !important; height: 100%;">
+                                                <div class="btn-list flex-nowrap" style="justify-content: center !important; gap: 0.125rem; margin: 0; padding: 0;">
+                                                    <button class="btn btn-xs btn-icon btn-action" 
+                                                            th:attr="data-id=${record.id}, data-type='income'" 
+                                                            onclick="deleteRecord(this)" 
+                                                            title="Delete" 
+                                                            style="padding: 0 !important; margin: 0 !important; min-height: auto; height: 1.25rem; width: 1.25rem; display: flex; align-items: center; justify-content: center;">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 右边表格：Expense -->
+                    <div class="col-md-6 col-lg-5">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Expense Records</h3>
+                                <div class="card-actions">
+                                    <div class="btn-list">
+                                        <button type="button" class="btn btn-xs btn-icon btn-action" onclick="addEmptyRow('expense')" title="Add" style="padding: 0 !important; margin: 0 !important; min-height: auto; height: 1.25rem; width: 1.25rem; display: flex; align-items: center; justify-content: center;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-vcenter table-hover table-sm">
+                                    <thead>
+                                        <tr class="table-active">
+                                            <th class="col-title" style="text-align: center !important; width: 150px;">Title</th>
+                                            <th class="col-amount" style="text-align: center !important; width: 80px;">Amount</th>
+                                            <th class="col-type" style="text-align: center !important; width: 70px;">Type</th>
+                                            <th class="col-action" style="text-align: center !important; width: 60px;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:if="${records.![type == 'expense'].empty}">
+                                            <td colspan="4" class="text-center py-3">
+                                                <div class="empty">
+                                                    <div class="empty-img" style="height: 80px;">
+                                                        <img src="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/assets/img/illustrations/missing-translation.svg" height="80" alt="">
+                                                    </div>
+                                                    <p class="empty-title m-1">No expense records found</p>
+                                                    <p class="empty-subtitle text-muted m-1">No expense records available.</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr th:each="record : ${records}" th:if="${record.type == 'expense'}" style="height: 40px;">
+                                            <td class="col-title" style="text-align: center !important; padding: 0.25rem !important;">
+                                                <input type="text" class="form-control record-input title-input" 
+                                                       th:attr="data-id=${record.id}, data-field='title'" 
+                                                       th:value="${record.title}" 
+                                                       onblur="saveRecord(this)" 
+                                                       onkeypress="if(event.key === 'Enter') { saveRecord(this); this.blur(); }" 
+                                                       style="text-align: center; font-weight: 500; font-size: 0.875rem; padding: 4px; width: 100%;">
+                                            </td>
+                                            <td class="col-amount" style="text-align: center !important; padding: 0.25rem !important;">
+                                                <input type="number" step="0.01" min="0.01" class="form-control record-input amount-input text-black" 
+                                                       th:attr="data-id=${record.id}, data-field='amount'" 
+                                                       th:value="${record.amount}" 
+                                                       onblur="saveRecord(this)" 
+                                                       onkeypress="if(event.key === 'Enter') { saveRecord(this); this.blur(); }" 
+                                                       style="text-align: center; font-weight: 500; font-size: 0.875rem; padding: 4px; width: 100%;">
+                                            </td>
+                                            <td class="col-type" style="text-align: center !important; padding: 0.25rem !important; width: 70px;">
+                                                <span th:class="'badge ' + (${record.type == 'income'} ? 'bg-red-lt' : 'bg-green-lt')" 
+                                                      style="text-align: center !important; display: inline-block; font-size: 0.75rem; padding: 0.25rem 0.5rem;" 
+                                                      th:text="${record.type == 'income' ? 'Income' : 'Expense'}">
+                                                    Expense
+                                                </span>
+                                            </td>
+                                            <td class="col-action" style="text-align: center !important; padding: 0 !important; height: 100%;">
+                                                <div class="btn-list flex-nowrap" style="justify-content: center !important; gap: 0.125rem; margin: 0; padding: 0;">
+                                                    <button class="btn btn-xs btn-icon btn-action" 
+                                                            th:attr="data-id=${record.id}, data-type='expense'" 
+                                                            onclick="deleteRecord(this)" 
+                                                            title="Delete" 
+                                                            style="padding: 0 !important; margin: 0 !important; min-height: auto; height: 1.25rem; width: 1.25rem; display: flex; align-items: center; justify-content: center;">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 统计卡片 -->
+                    <div class="col-md-6 col-lg-2">
+                        <div class="col-12">
+                            <div class="card card-sm">
+                                <div class="card-body">
+                <div class="row align-items-center">
+                <div class="col-auto">
+                    <span class="bg-red-lt avatar"><!-- Download SVG icon from http://tabler.io/icons/icon/arrow-up -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-1">
+                        <path d="M12 5l0 14"></path>
+                        <path d="M18 11l-6 -6"></path>
+                        <path d="M6 11l6 -6"></path></svg></span>
+                </div>
+                <div class="col">
+                    <div style="font-weight: bold;">
+                    [[${#numbers.formatCurrency(totalIncome)}]]
+                    <span class="float-end text-red" style="font-weight: bold;">+</span>
+                    </div>
+                    <div class="text-secondary">Total Income</div>
+                </div>
+                </div>
+            </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card card-sm">
+                            <div class="card-body">
+                <div class="row align-items-center">
+                <div class="col-auto">
+                    <span class="bg-green-lt avatar"><!-- Download SVG icon from http://tabler.io/icons/icon/arrow-down -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-1">
+                        <path d="M12 5l0 14"></path>
+                        <path d="M18 13l-6 6"></path>
+                        <path d="M6 13l6 6"></path></svg></span>
+                </div>
+                <div class="col">
+                    <div style="font-weight: bold;">
+                    [[${#numbers.formatCurrency(totalExpense)}]]
+                    <span class="float-end text-green" style="font-weight: bold;">-</span>
+                    </div>
+                    <div class="text-secondary">Total Expense</div>
+                </div>
+                </div>
+            </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card card-sm">
+                            <div class="card-body">
+                <div class="row align-items-center">
+                <div class="col-auto">
+                    <span class="bg-primary text-white avatar"><!-- Download SVG icon from http://tabler.io/icons/icon/currency-dollar -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-1">
+                        <path d="M16.7 8a3 3 0 0 0 -2.7 -2h-4a3 3 0 0 0 0 6h4a3 3 0 0 1 0 6h-4a3 3 0 0 1 -2.7 -2"></path>
+                        <path d="M12 3v3m0 12v3"></path></svg></span>
+                </div>
+                <div class="col">
+                    <div style="font-weight: bold;">￥[[${#numbers.formatCurrency(balance)}]]</div>
+                    <div class="text-secondary">Balance</div>
+                </div>
+                </div>
+            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Record</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="/record/update">
+                <div class="modal-body">
+                    <input type="hidden" id="editId" name="id">
+                    <div class="mb-3">
+                        <label class="form-label">Title</label>
+                        <input type="text" class="form-control" id="editTitle" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Amount</label>
+                        <input type="number" step="0.01" min="0.01" class="form-control" id="editAmount" name="amount" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Type</label>
+                        <select class="form-select" id="editType" name="type" required>
+                            <option value="income">+ (Income)</option>
+                            <option value="expense">- (Expense)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-sm btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 编辑按钮点击事件
+    document.addEventListener('DOMContentLoaded', function() {
+        const editBtns = document.querySelectorAll('.edit-btn');
+        const editModal = document.getElementById('editModal');
+        const editId = document.getElementById('editId');
+        const editTitle = document.getElementById('editTitle');
+        const editAmount = document.getElementById('editAmount');
+        const editType = document.getElementById('editType');
+        
+        editBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                editId.value = this.getAttribute('data-id');
+                editTitle.value = this.getAttribute('data-title');
+                editAmount.value = this.getAttribute('data-amount');
+                editType.value = this.getAttribute('data-type');
+            });
+        });
+    });
+    
+    // 添加空行函数
+    function addEmptyRow(type) {
+        // 找到对应类型的表格 - 使用原生JavaScript方法
+        const cardHeaders = document.querySelectorAll('.card-header');
+        let tableContainer;
+        
+        for (const header of cardHeaders) {
+            const title = header.querySelector('h3.card-title');
+            if (title) {
+                if (type === 'income' && title.textContent.includes('Income Records')) {
+                    tableContainer = header.closest('.card');
+                    break;
+                } else if (type === 'expense' && title.textContent.includes('Expense Records')) {
+                    tableContainer = header.closest('.card');
+                    break;
+                }
+            }
+        }
+        const tbody = tableContainer.querySelector('tbody');
+        
+        // 检查是否已有空行
+        if (tbody.querySelector('.new-record-row')) {
+            alert('已经有一个空行，请先保存或取消当前编辑');
+            return;
+        }
+        
+        // 移除空数据提示行
+        const emptyRow = tbody.querySelector('tr:has(.empty)');
+        if (emptyRow) {
+            emptyRow.style.display = 'none';
+        }
+        
+        // 创建新行
+        const newRow = document.createElement('tr');
+        newRow.className = 'new-record-row';
+        newRow.style.height = '40px';
+        
+        // 设置类型样式和颜色
+        const typeClass = type === 'income' ? 'bg-red-lt' : 'bg-green-lt';
+        const amountClass = 'text-black';
+        
+        // 构建行内容
+        newRow.innerHTML = `
+            <td class="col-title" style="text-align: center !important; padding: 0.25rem !important;">
+                <input type="text" class="form-control record-input title-input" 
+                       data-field="title" 
+                       placeholder="Enter title" 
+                       onkeypress="if(event.key === 'Enter') { saveNewRecord(this, '${type}'); }" 
+                       style="text-align: center; font-weight: 500; font-size: 0.875rem; padding: 4px; width: 100%;">
+            </td>
+            <td class="col-amount" style="text-align: center !important; padding: 0.25rem !important;">
+                <input type="number" step="0.01" min="0.01" class="form-control record-input amount-input ${amountClass}" 
+                       data-field="amount" 
+                       placeholder="0.00" 
+                       onkeypress="if(event.key === 'Enter') { saveNewRecord(this, '${type}'); }" 
+                       style="text-align: center; font-weight: 500; font-size: 0.875rem; padding: 4px; width: 100%;">
+            </td>
+            <td class="col-type" style="text-align: center !important; padding: 0.25rem !important; width: 70px;">
+                <span class="badge ${typeClass}" 
+                      style="text-align: center !important; display: inline-block; font-size: 0.75rem; padding: 0.25rem 0.5rem;">
+                    ${type === 'income' ? 'Income' : 'Expense'}
+                </span>
+            </td>
+            <td class="col-action" style="text-align: center !important; padding: 0 !important; height: 100%;">
+                <div class="btn-list flex-nowrap" style="justify-content: center !important; gap: 0.125rem; margin: 0; padding: 0;">
+                    <button class="btn btn-xs btn-icon btn-action btn-primary" 
+                            onclick="saveNewRecord(this, '${type}')" 
+                            title="Save" 
+                            style="padding: 0 !important; margin: 0 !important; min-height: auto; height: 1.25rem; width: 1.25rem; display: flex; align-items: center; justify-content: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10" /></svg>
+                    </button>
+                    <button class="btn btn-xs btn-icon btn-action btn-secondary" 
+                            onclick="cancelNewRecord(this)" 
+                            title="Cancel" 
+                            style="padding: 0 !important; margin: 0 !important; min-height: auto; height: 1.25rem; width: 1.25rem; display: flex; align-items: center; justify-content: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
+                    </button>
+                </div>
+            </td>
+        `;
+        
+        // 添加新行到表格
+        tbody.appendChild(newRow);
+        
+        // 聚焦到标题输入框
+        newRow.querySelector('.title-input').focus();
+    }
+    
+    // 保存新记录函数
+    function saveNewRecord(input, type) {
+        const row = input.closest('.new-record-row');
+        const title = row.querySelector('.title-input').value.trim();
+        const amount = row.querySelector('.amount-input').value;
+        
+        // 验证输入
+        if (!title || !amount) {
+            // 添加一个标志位，防止重复提示
+            if (!row.dataset.validationShown) {
+                row.dataset.validationShown = 'true';
+                alert('Please fill in both title and amount');
+                // 一段时间后清除标志位，允许再次提示
+                setTimeout(() => {
+                    delete row.dataset.validationShown;
+                }, 500);
+            }
+            return;
+        }
+        
+        if (parseFloat(amount) <= 0) {
+            // 添加一个标志位，防止重复提示
+            if (!row.dataset.validationShown) {
+                row.dataset.validationShown = 'true';
+                alert('Amount must be greater than 0');
+                // 一段时间后清除标志位，允许再次提示
+                setTimeout(() => {
+                    delete row.dataset.validationShown;
+                }, 500);
+            }
+            return;
+        }
+        
+        // 发送AJAX请求保存数据
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/record/add', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    // 保存成功，刷新页面
+                    window.location.reload();
+                } else {
+                    // 保存失败，显示错误信息
+                    alert('保存失败，请重试');
+                }
+            }
+        };
+        xhr.send('title=' + encodeURIComponent(title) + '&amount=' + amount + '&type=' + type);
+    }
+    
+    // 取消添加新记录函数
+    function cancelNewRecord(button) {
+        const row = button.closest('.new-record-row');
+        const tbody = row.closest('tbody');
+        
+        // 移除新行
+        row.remove();
+        
+        // 显示空数据提示行（如果表格为空）
+        const records = tbody.querySelectorAll('tr:not(.new-record-row)');
+        const emptyRow = tbody.querySelector('tr:has(.empty)');
+        if (emptyRow && records.length === 1) { // 1表示只有空数据提示行
+            emptyRow.style.display = 'table-row';
+        }
+    }
+
+    // 直接保存功能 - 简化版本
+    function saveRecord(input) {
+        const id = input.getAttribute('data-id');
+        const field = input.getAttribute('data-field');
+        const value = input.value;
+        
+        // 验证输入
+        if (!id || !field || !value) {
+            return;
+        }
+        
+        // 发送AJAX请求保存数据
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/update-record', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    // 保存成功，添加视觉反馈
+                    input.style.borderColor = 'green';
+                    setTimeout(() => {
+                        input.style.borderColor = '';
+                    }, 1000);
+                    
+                    // 更新统计指标
+                    updateStats();
+                } else {
+                    // 保存失败，添加视觉反馈
+                    input.style.borderColor = 'red';
+                    setTimeout(() => {
+                        input.style.borderColor = '';
+                    }, 1000);
+                }
+            }
+        };
+        xhr.send('id=' + id + '&field=' + field + '&value=' + encodeURIComponent(value));
+    }
+    
+    // 更新统计指标函数
+    function updateStats() {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', '/stats', true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                try {
+                    const stats = JSON.parse(xhr.responseText);
+                    
+                    // 更新页面上的统计指标
+                    // 找到显示totalIncome的元素
+                    const totalIncomeCard = document.querySelector('.card-body:has(.bg-red-lt) .col div');
+                    if (totalIncomeCard && totalIncomeCard.textContent.includes('￥')) {
+                        const spanPart = totalIncomeCard.innerHTML.substring(totalIncomeCard.innerHTML.indexOf('<span'));
+                        totalIncomeCard.innerHTML = '￥' + stats.totalIncome.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + spanPart;
+                    }
+                    
+                    // 找到显示totalExpense的元素
+                    const totalExpenseCard = document.querySelector('.card-body:has(.bg-green-lt) .col div');
+                    if (totalExpenseCard && totalExpenseCard.textContent.includes('￥')) {
+                        const spanPart = totalExpenseCard.innerHTML.substring(totalExpenseCard.innerHTML.indexOf('<span'));
+                        totalExpenseCard.innerHTML = '￥' + stats.totalExpense.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + spanPart;
+                    }
+                    
+                    // 找到显示balance的元素
+                    const balanceElement = document.querySelector('.card-body:has(.bg-primary) .col div');
+                    if (balanceElement && balanceElement.textContent.includes('￥')) {
+                        balanceElement.textContent = '￥' + stats.balance.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    }
+                } catch (error) {
+                    console.error('Error parsing stats data:', error);
+                }
+            }
+        };
+        xhr.send();
+    }
+    
+    // 保存记录
+
+    
+    // 删除单个记录
+    function deleteRecord(button) {
+        // 获取记录ID和类型
+        const id = button.getAttribute('data-id');
+        const type = button.getAttribute('data-type');
+        
+        if (confirm('Are you sure you want to delete this record?')) {
+            // 发送AJAX请求删除数据
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/delete-records', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        // 删除成功，刷新页面
+                        window.location.reload();
+                    } else {
+                        // 删除失败，显示错误信息
+                        alert('Failed to delete record. Please try again.');
+                    }
+                }
+            };
+            xhr.send('ids=' + id + '&type=' + type);
+        }
+    }
+    
+    // 删除选中记录（保留此函数以支持潜在的批量删除需求）
+    function deleteSelectedRecords(type) {
+        // 获取所有选中的记录
+        const checkboxes = document.querySelectorAll(`input[name="selected-${type}-ids"]:checked`);
+        const selectedIds = Array.from(checkboxes).map(cb => cb.value);
+        
+        if (selectedIds.length === 0) {
+            alert('Please select at least one record to delete.');
+            return;
+        }
+        
+        if (confirm('Are you sure you want to delete the selected records?')) {
+            // 发送AJAX请求删除数据
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/delete-records', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        // 删除成功，刷新页面
+                        window.location.reload();
+                    } else {
+                        // 删除失败，显示错误信息
+                        alert('删除记录失败，请重试。');
+                    }
+                }
+            };
+            xhr.send('ids=' + selectedIds.join(',') + '&type=' + type);
+        }
+    }
+</script>
+</body>
+</html>

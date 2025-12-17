@@ -1,0 +1,36 @@
+# render.yaml
+# 用于配置Render平台上的Docker部署
+
+services:
+  - type: web
+    name: demo-spring-boot-app
+    env: docker
+    repo: https://github.com/your-username/your-repository-name.git  # 替换为你的GitHub仓库URL
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: demo-database
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: demo-database
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: demo-database
+          property: password
+    ports:
+      - 8080
+    healthCheckPath: /actuator/health  # 如果启用了Spring Boot Actuator
+    autoDeploy: true
+
+# 数据库配置（如果需要在Render上部署数据库）
+databases:
+  - name: demo-database
+    engine: postgres  # 可以替换为mysql或其他支持的数据库
+    plan: free  # 选择合适的计划
+    region: oregon  # 选择合适的区域

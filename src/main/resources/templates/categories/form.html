@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Expense Tracker')}">
+    <style>
+        .color-picker-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .color-preview-box {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .color-preview-box:hover {
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .form-control[type="color"] {
+            height: 40px;
+            padding: 5px;
+        }
+        
+        .icon-preview {
+            max-width: 32px;
+            max-height: 32px;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{layout :: div(content=~{::content}, activePage='categories')}">
+    <div th:fragment="content" class="content">
+        <!-- Page Content -->
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <h2 class="page-title" th:text="${category.id != null ? 'Edit Category' : 'Add Category'}">Add Category</h2>
+                    </div>
+                    <div class="col-auto ms-auto d-print-none">
+                        <div class="btn-list">
+                            <a href="/categories" class="btn btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="5 12 9 16 19 6"></polyline>
+                                </svg>
+                                Back to list
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row row-deck row-cards">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title" th:text="${category.id != null ? 'Edit Category' : 'New Category'}">New Category</h3>
+                            </div>
+                            <div class="card-body">
+                                <form th:action="@{/categories/save}" th:object="${category}" method="post">
+                                    <input type="hidden" th:field="*{id}" th:if="${category.id != null}"/>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Category Name</label>
+                                        <input type="text" th:field="*{name}" class="form-control" placeholder="Enter category name" required>
+                                        <div class="form-text">This name will be displayed throughout the application.</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Description</label>
+                                        <textarea th:field="*{description}" class="form-control" rows="3" placeholder="Enter category description"></textarea>
+                                        <div class="form-text">Optional description to provide more details about this category.</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Icon URL</label>
+                                        <input type="url" th:field="*{iconUrl}" class="form-control" placeholder="https://example.com/icon.png">
+                                        <div class="form-text">Optional URL to an icon image that represents this category.</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Color</label>
+                                        <div class="input-group">
+                                            <input type="color" th:field="*{color}" class="form-control form-control-color" value="#007bff" style="max-width: 60px;" id="colorPicker">
+                                            <input type="text" id="colorText" class="form-control" placeholder="#007bff" pattern="^#[0-9A-Fa-f]{6}$" maxlength="7" th:value="*{color}">
+                                        </div>
+                                        <div class="form-text">Choose a color to visually identify this category. Click the color picker or enter a hex color code.</div>
+                                    </div>
+
+                                    <div class="form-footer">
+                                        <button type="submit" class="btn btn-sm btn-primary" th:text="${category.id != null ? 'Update Category' : 'Create Category'}">Create Category</button>
+                                        <a href="/categories" class="btn btn-sm btn-secondary">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Best Practices</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="markdown">
+                                    <h4>Category Creation Tips</h4>
+                                    <ul>
+                                        <li>Use clear, descriptive names for your categories</li>
+                                        <li>Keep category names short and memorable</li>
+                                        <li>Consider grouping similar expenses together</li>
+                                        <li>Add descriptions to provide context</li>
+                                        <li>Use icons to make categories visually distinctive</li>
+                                    </ul>
+
+                                    <h4>Icon Guidelines</h4>
+                                    <ul>
+                                        <li>Use square images (recommended size: 24x24 pixels)</li>
+                                        <li>Choose icons that clearly represent the category</li>
+                                        <li>Use transparent backgrounds for better appearance</li>
+                                        <li>Ensure icons are from trusted sources</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Common Categories</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="markdown">
+                                    <ul>
+                                        <li><strong>Food & Dining</strong> - Restaurants, groceries, coffee</li>
+                                        <li><strong>Transportation</strong> - Gas, public transit, rideshare</li>
+                                        <li><strong>Shopping</strong> - Clothing, electronics, household items</li>
+                                        <li><strong>Entertainment</strong> - Movies, games, subscriptions</li>
+                                        <li><strong>Bills & Utilities</strong> - Rent, electricity, internet</li>
+                                        <li><strong>Healthcare</strong> - Doctor visits, medications</li>
+                                        <li><strong>Education</strong> - Courses, books, supplies</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Color picker synchronization
+    document.addEventListener('DOMContentLoaded', function() {
+        const colorPicker = document.getElementById('colorPicker');
+        const colorText = document.getElementById('colorText');
+        const form = document.querySelector('form');
+
+        if (colorPicker && colorText) {
+            // Sync color picker to text input
+            colorPicker.addEventListener('change', function() {
+                colorText.value = this.value;
+            });
+
+            // Sync text input to color picker and validate
+            colorText.addEventListener('input', function() {
+                const value = this.value;
+                // Validate hex color format
+                if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
+                    colorPicker.value = value;
+                    this.classList.remove('is-invalid');
+                } else if (value.length === 0) {
+                    this.classList.remove('is-invalid');
+                } else {
+                    this.classList.add('is-invalid');
+                }
+            });
+
+            // Sync text input back to color picker on form submission
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    if (colorText.value && /^#[0-9A-Fa-f]{6}$/.test(colorText.value)) {
+                        colorPicker.value = colorText.value;
+                    }
+                });
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Expense Tracker')}">
+    <style>
+        .icon-preview {
+            max-width: 32px;
+            max-height: 32px;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{layout :: div(content=~{::content}, activePage='payments')}">
+    <div th:fragment="content" class="content">
+        <!-- Page Content -->
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <h2 class="page-title" th:text="${payment.id != null ? 'Edit Payment Provider' : 'Add Payment Provider'}">Add Payment Provider</h2>
+                    </div>
+                    <div class="col-auto ms-auto d-print-none">
+                        <div class="btn-list">
+                            <a href="/payments" class="btn btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="5 12 9 16 19 6"></polyline>
+                                </svg>
+                                Back to list
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row row-deck row-cards">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title" th:text="${payment.id != null ? 'Edit Payment Provider' : 'New Payment Provider'}">New Payment Provider</h3>
+                            </div>
+                            <div class="card-body">
+                                <form th:action="@{/payments/save}" th:object="${payment}" method="post">
+                                    <input type="hidden" th:field="*{id}" th:if="${payment.id != null}"/>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Provider Name</label>
+                                        <input type="text" th:field="*{name}" class="form-control" placeholder="Enter payment provider name" required>
+                                        <div class="form-text">This name will be displayed throughout the application.</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Description</label>
+                                        <textarea th:field="*{description}" class="form-control" rows="3" placeholder="Enter payment provider description"></textarea>
+                                        <div class="form-text">Optional description to provide more details about this payment provider.</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">CSS Class</label>
+                                        <input type="text" th:field="*{cssClass}" class="form-control" placeholder="bi-credit-card">
+                                        <div class="form-text">Optional CSS class to display an icon for this payment provider.</div>
+                                    </div>
+
+                                    <div class="form-footer">
+                                        <button type="submit" class="btn btn-sm btn-primary" th:text="${payment.id != null ? 'Update Payment Provider' : 'Create Payment Provider'}">Create Payment Provider</button>
+                                        <a href="/payments" class="btn btn-sm btn-secondary">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Best Practices</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="markdown">
+                                    <h4>Payment Provider Creation Tips</h4>
+                                    <ul>
+                                        <li>Use clear, descriptive names for your payment providers</li>
+                                        <li>Keep payment provider names short and memorable</li>
+                                        <li>Consider grouping similar payment providers together</li>
+                                        <li>Add descriptions to provide context</li>
+                                        <li>Use icons to make payment providers visually distinctive</li>
+                                    </ul>
+
+                                    <h4>CSS Class Guidelines</h4>
+                                    <ul>
+                                        <li>Use Bootstrap Icons or other icon library classes</li>
+                                        <li>Choose classes that clearly represent the payment provider</li>
+                                        <li>Example: bi-credit-card, bi-cash, bi-bank</li>
+                                        <li>Ensure the icon library is properly loaded in the application</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Common Payment Providers</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="markdown">
+                                    <ul>
+                                        <li><strong>Cash</strong> - Physical currency</li>
+                                        <li><strong>Credit Card</strong> - Visa, Mastercard, American Express</li>
+                                        <li><strong>Debit Card</strong> - Direct bank account payment</li>
+                                        <li><strong>Digital Wallet</strong> - PayPal, Apple Pay, Google Pay</li>
+                                        <li><strong>Bank Transfer</strong> - Direct bank-to-bank transfer</li>
+                                        <li><strong>Check</strong> - Paper check payment</li>
+                                        <li><strong>Mobile Payment</strong> - WeChat Pay, Alipay</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+</script>
+</body>
+</html>

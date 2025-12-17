@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Expense Tracker')}">
+</head>
+<body>
+<div th:replace="~{layout :: div(content=~{::content}, activePage='users')}">
+    <div th:fragment="content" class="content">
+        <!-- Page Content -->
+        <div class="page-header d-print-none">
+            <div class="container-xl">
+                <div class="row g-2 align-items-center">
+                    <div class="col">
+                        <h2 class="page-title" th:text="${user != null ? 'Edit User' : 'New User'}">New User</h2>
+                    </div>
+                    <div class="col-auto ms-auto d-print-none">
+                        <div class="btn-list">
+                            <a href="/users" class="btn btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="5 12 9 16 19 6"></polyline>
+                                </svg>
+                                Back to Users
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-body">
+            <div class="container-xl">
+                <div class="row row-deck row-cards">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title" th:text="${user != null ? 'Edit User' : 'Create New User'}">Create New User</h3>
+                            </div>
+                            <div class="card-body">
+                                <form th:action="@{/users/save}" th:object="${user}" method="post">
+                                    <input type="hidden" th:field="*{id}" />
+                                    <div class="mb-3">
+                                        <label class="form-label" for="username">Username</label>
+                                        <input type="text" class="form-control" id="username" th:field="*{username}" placeholder="Enter username" required />
+                                        <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger small"></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="email">Email</label>
+                                        <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="Enter email" required />
+                                        <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger small"></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="fullName">Full Name</label>
+                                        <input type="text" class="form-control" id="fullName" th:field="*{fullName}" placeholder="Enter full name" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="role">Role</label>
+                                        <select class="form-control" id="role" th:field="*{role}" required>
+                                            <option value="USER">User</option>
+                                            <option value="ADMIN">Admin</option>
+                                        </select>
+                                        <div th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="text-danger small"></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="iconUrl">Icon URL</label>
+                                        <input type="url" class="form-control" id="iconUrl" th:field="*{iconUrl}" placeholder="Enter icon URL" />
+                                        <div th:if="${#fields.hasErrors('iconUrl')}" th:errors="*{iconUrl}" class="text-danger small"></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="title">Title</label>
+                                        <input type="text" class="form-control" id="title" th:field="*{title}" placeholder="Enter title" />
+                                        <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-danger small"></div>
+                                    </div>
+                                    <div class="mb-3" th:if="${user == null or user.id == null or user.id == ''}">
+                                        <label class="form-label" for="password">Password</label>
+                                        <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="Enter password" required />
+                                        <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger small"></div>
+                                    </div>
+                                    <div class="form-footer">
+                                        <button type="submit" class="btn btn-sm btn-primary" th:text="${user != null ? 'Update User' : 'Create User'}">Create User</button>
+                                        <a href="/users" class="btn btn-sm btn-secondary">Cancel</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Best Practices</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="markdown">
+                                    <h4>User Creation Tips</h4>
+                                    <ul>
+                                        <li>Use unique usernames and valid email addresses</li>
+                                        <li>Choose strong passwords (minimum 8 characters)</li>
+                                        <li>Keep user information up to date</li>
+                                        <li>Provide a clear full name for easy identification</li>
+                                        <li>Assign appropriate roles (USER or ADMIN)</li>
+                                        <li>Use valid URLs for user icons</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Common Guidelines</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="markdown">
+                                    <ul>
+                                        <li><strong>Usernames</strong> - Should be unique and memorable</li>
+                                        <li><strong>Email</strong> - Must be a valid email address format</li>
+                                        <li><strong>Passwords</strong> - Should contain a mix of characters</li>
+                                        <li><strong>Full Name</strong> - Helps in user identification</li>
+                                        <li><strong>Role</strong> - Determines user permissions (USER/ADMIN)</li>
+                                        <li><strong>Icon URL</strong> - Displayed as user's profile picture</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
