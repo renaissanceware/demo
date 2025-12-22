@@ -562,7 +562,7 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr th:each="expense : ${expenses}" style="height: 40px;">
+                                    <tr th:each="expense : ${expenses}" style="height: 40px;" th:styleappend="${expense.confirmed} ? 'text-decoration: line-through;' : ''">
                                         <td style="text-align: center !important; padding: 0.25rem !important;">
                                             <div th:text="${#temporals.format(expense.date, 'yyyy-MM-dd')}" style="text-align: center !important; display: block; font-size: 0.875rem; white-space: nowrap;">
                                                 2024-01-01
