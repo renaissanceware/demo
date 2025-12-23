@@ -43,6 +43,7 @@ public class ExpenseService {
                 expense.setCategory(expenseDetails.getCategory());
                 expense.setDate(expenseDetails.getDate());
                 expense.setNote(expenseDetails.getNote());
+                expense.setSort(expenseDetails.getSort());
                 expense.setChannel(expenseDetails.getChannel());
                 expense.setPayment(expenseDetails.getPayment());
                 expense.setConfirmed(expenseDetails.getConfirmed());
