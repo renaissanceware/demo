@@ -33,7 +33,7 @@ public class Expense {
     private String title;
     
     @NotNull(message = "Amount is required")
-    @DecimalMin(value = "0.01", message = "Amount must be greater than 0")
+    @DecimalMin(value = "0.00", message = "Amount must be greater than or equal to 0")
     @Column(nullable = false, precision = 10, scale = 2)
     @JsonProperty("amount")
     private BigDecimal amount;
