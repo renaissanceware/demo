@@ -16,7 +16,7 @@ public class TagService {
     private TagRepository tagRepository;
     
     public List<Tag> getAllTags() {
-        return tagRepository.findAll();
+        return tagRepository.findAllByOrderByNameAsc();
     }
     
     public Optional<Tag> getTagById(String id) {
@@ -58,7 +58,7 @@ public class TagService {
     }
     
     public List<Tag> searchTags(String name) {
-        return tagRepository.findByNameContaining(name);
+        return tagRepository.findByNameContainingOrderByNameAsc(name);
     }
     
     public boolean tagExists(String id) {

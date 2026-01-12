@@ -15,4 +15,8 @@ public interface TagRepository extends JpaRepository<Tag, String> {
     boolean existsByName(String name);
     
     List<Tag> findByNameContaining(String name);
+    
+    List<Tag> findAllByOrderByNameAsc();
+    
+    List<Tag> findByNameContainingOrderByNameAsc(String name);
 }
