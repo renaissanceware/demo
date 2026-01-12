@@ -527,6 +527,7 @@
                                     <tr class="table-active">
                                         <th class="col-date" style="text-align: center !important; width: 150px;">Date</th>
                                         <th style="text-align: center !important; width: 70px;">Sort</th>
+                                        <th style="text-align: center !important; width: 70px;">Tag</th>
                                         <th style="text-align: center !important; width: 200px;">Title</th>
                                         <th style="text-align: center !important; width: 200px;">Note</th>
                                         <th class="col-category" style="text-align: center !important; width: 150px;">Category</th>
@@ -581,6 +582,15 @@
                                                          font-size: 0.75rem;
                                                          text-align: center;
                                                          vertical-align: middle;"></span>
+                                        </td>
+                                        <td style="text-align: center !important; padding: 0.25rem !important; vertical-align: middle;">
+                                            <div th:if="${expense.expenseTags != null and not expense.expenseTags.isEmpty()}">
+                                                <div th:each="expenseTag : ${expense.expenseTags}" style="margin-bottom: 2px;">
+                                                    <span class="tag">
+                                                        <span class="badge tag-status badge-dot" th:style="'background-color: ' + ${expenseTag.tag.color}"></span>
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </td>
                                         <td style="text-align: center !important; padding: 0.25rem !important;">
                                              <div style="text-align: center !important; display: block; font-weight: 500; font-size: 0.875rem;">

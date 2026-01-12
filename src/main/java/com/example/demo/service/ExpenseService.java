@@ -2,11 +2,16 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Expense;
 import com.example.demo.entity.ExpenseFilterParams;
+import com.example.demo.entity.ExpenseTag;
+import com.example.demo.entity.Tag;
 import com.example.demo.repository.ExpenseRepository;
+import com.example.demo.repository.ExpenseTagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import jakarta.persistence.criteria.JoinType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.validation.Valid;
 
@@ -18,24 +23,48 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@Transactional
 public class ExpenseService {
     
     @Autowired
     private ExpenseRepository expenseRepository;
     
+    @Autowired
+    private ExpenseTagRepository expenseTagRepository;
+    
+    @Autowired
+    private TagService tagService;
+    
     public List<Expense> getAllExpenses() {
-        return expenseRepository.findAllByOrderByDateAscSortAsc();
+        return expenseRepository.findAllWithTags();
     }
     
     public Optional<Expense> getExpenseById(String id) {
-        return expenseRepository.findById(id);
+        return expenseRepository.findByIdWithTags(id);
     }
     
-    public Expense saveExpense(@Valid Expense expense) {
-        return expenseRepository.save(expense);
+    public Expense saveExpense(@Valid Expense expense, List<String> selectedTagIds) {
+        // Save the expense first
+        Expense savedExpense = expenseRepository.save(expense);
+        
+        // Save tags if any
+        if (selectedTagIds != null && !selectedTagIds.isEmpty()) {
+            for (String tagId : selectedTagIds) {
+                // Only save if tag exists
+                if (tagService.tagExists(tagId)) {
+                    Optional<Tag> tag = tagService.getTagById(tagId);
+                    tag.ifPresent(t -> {
+                        ExpenseTag expenseTag = new ExpenseTag(savedExpense, t);
+                        expenseTagRepository.save(expenseTag);
+                    });
+                }
+            }
+        }
+        
+        return savedExpense;
     }
     
-    public Expense updateExpense(String id, @Valid Expense expenseDetails) {
+    public Expense updateExpense(String id, @Valid Expense expenseDetails, List<String> selectedTagIds) {
         return expenseRepository.findById(id)
             .map(expense -> {
                 expense.setTitle(expenseDetails.getTitle());
@@ -47,7 +76,28 @@ public class ExpenseService {
                 expense.setChannel(expenseDetails.getChannel());
                 expense.setPayment(expenseDetails.getPayment());
                 expense.setConfirmed(expenseDetails.getConfirmed());
-                return expenseRepository.save(expense);
+                
+                // Save the updated expense
+                Expense updatedExpense = expenseRepository.save(expense);
+                
+                // Update tags: first delete all existing tags for this expense
+                expenseTagRepository.deleteByExpenseId(id);
+                
+                // Then add the new tags
+                if (selectedTagIds != null && !selectedTagIds.isEmpty()) {
+                    for (String tagId : selectedTagIds) {
+                        // Only save if tag exists
+                        if (tagService.tagExists(tagId)) {
+                            Optional<Tag> tag = tagService.getTagById(tagId);
+                            tag.ifPresent(t -> {
+                                ExpenseTag expenseTag = new ExpenseTag(updatedExpense, t);
+                                expenseTagRepository.save(expenseTag);
+                            });
+                        }
+                    }
+                }
+                
+                return updatedExpense;
             })
             .orElseThrow(() -> new RuntimeException("Expense not found with id: " + id));
     }
@@ -56,12 +106,22 @@ public class ExpenseService {
         if (!expenseRepository.existsById(id)) {
             throw new RuntimeException("Expense not found with id: " + id);
         }
+        
+        // Delete all tags associated with this expense first
+        expenseTagRepository.deleteByExpenseId(id);
+        
+        // Then delete the expense
         expenseRepository.deleteById(id);
     }
     
     public List<Expense> searchExpenses(String title) {
         return expenseRepository.findAll(
-            (root, query, cb) -> cb.like(root.get("title"), "%" + title + "%"),
+            (root, query, cb) -> {
+                // Add fetch join for expenseTags and tag to avoid N+1 queries
+                query.distinct(true);
+                root.fetch("expenseTags", JoinType.LEFT).fetch("tag", JoinType.LEFT);
+                return cb.like(cb.lower(root.get("title")), "%" + title.toLowerCase() + "%");
+            },
             Sort.by(Sort.Direction.ASC, "date", "sort")
         );
     }
@@ -74,7 +134,12 @@ public class ExpenseService {
         LocalDate startDate = YearMonth.of(year, month).atDay(1);
         LocalDate endDate = YearMonth.of(year, month).atEndOfMonth();
         return expenseRepository.findAll(
-            (root, query, cb) -> cb.between(root.get("date"), startDate, endDate),
+            (root, query, cb) -> {
+                // Add fetch join for expenseTags and tag to avoid N+1 queries
+                query.distinct(true);
+                root.fetch("expenseTags", JoinType.LEFT).fetch("tag", JoinType.LEFT);
+                return cb.between(root.get("date"), startDate, endDate);
+            },
             Sort.by(Sort.Direction.ASC, "date", "sort")
         );
     }
@@ -94,6 +159,13 @@ public class ExpenseService {
     // New flexible filter method using Specifications
     public List<Expense> getFilteredExpenses(ExpenseFilterParams filterParams) {
         Specification<Expense> spec = Specification.where(null);
+        
+        // Add fetch join for expenseTags and tag to avoid N+1 queries
+        spec = spec.and((root, query, criteriaBuilder) -> {
+            query.distinct(true);
+            root.fetch("expenseTags", JoinType.LEFT).fetch("tag", JoinType.LEFT);
+            return criteriaBuilder.conjunction();
+        });
         
         // Apply filters
         spec = applyFilters(spec, filterParams);
@@ -160,4 +232,13 @@ public class ExpenseService {
         
         return spec;
     }
+    
+    // Get tags for a specific expense
+    public List<Tag> getTagsByExpenseId(String expenseId) {
+        List<ExpenseTag> expenseTags = expenseTagRepository.findByExpenseId(expenseId);
+        return expenseTags.stream()
+                .map(ExpenseTag::getTag)
+                .toList();
+    }
 }
+

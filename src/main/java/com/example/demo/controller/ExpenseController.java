@@ -2,10 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Expense;
 import com.example.demo.entity.ExpenseFilterParams;
+import com.example.demo.entity.Tag;
 import com.example.demo.service.CategoryService;
 import com.example.demo.service.ChannelService;
 import com.example.demo.service.ExpenseService;
 import com.example.demo.service.PaymentService;
+import com.example.demo.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,10 +16,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/expenses")
@@ -34,6 +39,9 @@ public class ExpenseController {
     
     @Autowired
     private PaymentService paymentService;
+    
+    @Autowired
+    private TagService tagService;
     
 
     
@@ -84,6 +92,8 @@ public class ExpenseController {
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("channels", channelService.getAllChannels());
         model.addAttribute("payments", paymentService.getAllPayments());
+        model.addAttribute("tags", tagService.getAllTags());
+        model.addAttribute("selectedTags", new HashSet<String>());
         model.addAttribute("pageTitle", "Create New Expense");
         model.addAttribute("action", "Create");
         return "expenses/form";
@@ -92,12 +102,17 @@ public class ExpenseController {
     @PostMapping("/save")
     public String saveExpense(@Valid @ModelAttribute Expense expense, 
                               BindingResult result, 
+                              @RequestParam(value = "selectedTags", required = false) List<String> selectedTags,
                               Model model,
                               RedirectAttributes redirectAttributes) {
+        // Process selected tags will be handled in the service layer
+        
         if (result.hasErrors()) {
             model.addAttribute("categories", categoryService.getAllCategories());
             model.addAttribute("channels", channelService.getAllChannels());
             model.addAttribute("payments", paymentService.getAllPayments());
+            model.addAttribute("tags", tagService.getAllTags());
+            model.addAttribute("selectedTags", selectedTags != null ? new HashSet<>(selectedTags) : new HashSet<String>());
             model.addAttribute("pageTitle", expense.getId() != null ? "Edit Expense" : "Create New Expense");
             model.addAttribute("action", expense.getId() != null ? "Update" : "Create");
             return "expenses/form";
@@ -105,15 +120,19 @@ public class ExpenseController {
         
         try {
             if (expense.getId() != null) {
-                expenseService.updateExpense(expense.getId(), expense);
+                expenseService.updateExpense(expense.getId(), expense, selectedTags);
                 redirectAttributes.addFlashAttribute("successMessage", "Expense updated successfully!");
             } else {
-                expenseService.saveExpense(expense);
+                expenseService.saveExpense(expense, selectedTags);
                 redirectAttributes.addFlashAttribute("successMessage", "Expense created successfully!");
             }
             return "redirect:/expenses";
         } catch (RuntimeException e) {
             model.addAttribute("categories", categoryService.getAllCategories());
+            model.addAttribute("channels", channelService.getAllChannels());
+            model.addAttribute("payments", paymentService.getAllPayments());
+            model.addAttribute("tags", tagService.getAllTags());
+            model.addAttribute("selectedTags", selectedTags != null ? new HashSet<>(selectedTags) : new HashSet<String>());
             model.addAttribute("errorMessage", e.getMessage());
             model.addAttribute("pageTitle", expense.getId() != null ? "Edit Expense" : "Create New Expense");
             model.addAttribute("action", expense.getId() != null ? "Update" : "Create");
@@ -125,10 +144,19 @@ public class ExpenseController {
     public String showEditForm(@PathVariable String id, Model model, RedirectAttributes redirectAttributes) {
         Optional<Expense> expense = expenseService.getExpenseById(id);
         if (expense.isPresent()) {
+            // Get tags for this expense
+            List<Tag> expenseTags = expenseService.getTagsByExpenseId(id);
+            Set<String> selectedTagIds = new HashSet<>();
+            for (Tag tag : expenseTags) {
+                selectedTagIds.add(tag.getId());
+            }
+            
             model.addAttribute("expense", expense.get());
             model.addAttribute("categories", categoryService.getAllCategories());
             model.addAttribute("channels", channelService.getAllChannels());
             model.addAttribute("payments", paymentService.getAllPayments());
+            model.addAttribute("tags", tagService.getAllTags());
+            model.addAttribute("selectedTags", selectedTagIds);
             model.addAttribute("pageTitle", "Edit Expense");
             model.addAttribute("action", "Update");
             return "expenses/form";
@@ -158,7 +186,7 @@ public class ExpenseController {
         if (optionalExpense.isPresent()) {
             Expense expense = optionalExpense.get();
             expense.setConfirmed(!expense.getConfirmed());
-            expenseService.updateExpense(id, expense);
+            expenseService.updateExpense(id, expense, new ArrayList<>());
             
             Map<String, Object> response = new HashMap<>();
             response.put("status", "success");

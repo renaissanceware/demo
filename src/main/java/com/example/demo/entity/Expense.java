@@ -13,6 +13,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.HashSet;
 
 @Entity
 @Table(name = "expense")
@@ -86,6 +88,10 @@ public class Expense {
     @JsonProperty("payment")
     private Payment payment;
     
+    @OneToMany(mappedBy = "expense", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonProperty("tags")
+    private Set<ExpenseTag> expenseTags = new HashSet<>();
+    
     public Expense() {
         this.date = LocalDate.now();
         this.createdAt = LocalDateTime.now();
@@ -94,6 +100,7 @@ public class Expense {
         this.payment = new Payment();
         this.category = new Category();
         this.channel = new Channel();
+        this.expenseTags = new HashSet<>();
     }
     
     public Expense(String title, BigDecimal amount, Category category) {
@@ -204,5 +211,13 @@ public class Expense {
     
     public void setPayment(Payment payment) {
         this.payment = payment;
+    }
+    
+    public Set<ExpenseTag> getExpenseTags() {
+        return expenseTags;
+    }
+    
+    public void setExpenseTags(Set<ExpenseTag> expenseTags) {
+        this.expenseTags = expenseTags;
     }
 }
