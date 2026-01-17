@@ -88,10 +88,21 @@
 
                                     <div class="mb-3">
                                         <label class="form-label">Channel</label>
-                                        <select th:field="*{channel.id}" class="form-control" required>
-                                            <option value="">Select a channel</option>
-                                            <option th:each="channel : ${channels}" th:value="${channel.id}" th:text="${channel.name}"></option>
-                                        </select>
+                                        <div class="form-selectgroup form-selectgroup-boxes d-flex flex-column">
+                                            <label class="form-selectgroup-item flex-fill" th:each="channel : ${channels}">
+                                                <input type="radio" th:field="*{channel.id}" th:value="${channel.id}" class="form-selectgroup-input" th:checked="${expense.channel?.id == channel.id}">
+                                                <div class="form-selectgroup-label d-flex align-items-center p-3">
+                                                    <div class="me-3">
+                                                        <span class="form-selectgroup-check"></span>
+                                                    </div>
+                                                    <div>
+                                                        <span th:if="${channel.iconUrl}" class="avatar avatar-xs me-2" th:style="'background-image: url(' + ${channel.iconUrl} + ')'"></span>
+                                                        <span th:unless="${channel.iconUrl}" class="avatar avatar-xs me-2" style="background-color: #206bc4"></span>
+                                                        <span th:text="${channel.name}"></span>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
                                         <div class="form-text">The channel through which the expense was made.</div>
                                     </div>
 

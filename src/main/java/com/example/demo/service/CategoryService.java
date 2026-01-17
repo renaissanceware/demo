@@ -6,8 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.validation.Valid;
+import java.text.Collator;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -17,7 +21,11 @@ public class CategoryService {
     private CategoryRepository categoryRepository;
     
     public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAll();
+        // 使用Collator进行中文排序
+        Collator collator = Collator.getInstance(Locale.CHINA);
+        Collections.sort(categories, Comparator.comparing(Category::getName, collator));
+        return categories;
     }
     
     public Optional<Category> getCategoryById(String id) {
