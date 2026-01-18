@@ -40,8 +40,6 @@ public class HomeController {
         return "index";
     }
     
-
-    
     @GetMapping("/record/delete/{id}")
     public String deleteRecord(@PathVariable String id) {
         recordService.deleteRecord(id);
@@ -112,33 +110,13 @@ public class HomeController {
     
     // 内部类用于统计数据传输
     private static class StatsDTO {
-        private BigDecimal totalIncome;
-        private BigDecimal totalExpense;
-        private BigDecimal balance;
-        
-        // Getters and setters
-        public BigDecimal getTotalIncome() {
-            return totalIncome;
-        }
-        
         public void setTotalIncome(BigDecimal totalIncome) {
-            this.totalIncome = totalIncome;
-        }
-        
-        public BigDecimal getTotalExpense() {
-            return totalExpense;
         }
         
         public void setTotalExpense(BigDecimal totalExpense) {
-            this.totalExpense = totalExpense;
-        }
-        
-        public BigDecimal getBalance() {
-            return balance;
         }
         
         public void setBalance(BigDecimal balance) {
-            this.balance = balance;
         }
     }
 }
