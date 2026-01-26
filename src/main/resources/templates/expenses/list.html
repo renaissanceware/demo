@@ -447,6 +447,23 @@
                                 </div>
                             </div>
                             
+                            <div class="subheader mb-2">Tag</div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="tagId" id="allTags" value="" th:checked="${selectedTag == null or selectedTag.isEmpty()}">
+                                    <label class="form-check-label" for="allTags">
+                                        All Tags
+                                    </label>
+                                </div>
+                                <div th:each="tag : ${tags}" class="form-check">
+                                    <input class="form-check-input" type="radio" name="tagId" th:id="'tag' + ${tag.id}" th:value="${tag.id}" th:checked="${selectedTag == tag.id}">
+                                    <label class="form-check-label" th:for="'tag' + ${tag.id}">
+                                        <span class="badge tag-status badge-dot" th:style="'background-color: ' + ${tag.color}"></span>
+                                        <span th:text="${tag.name}"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            
                             <div class="subheader mb-2">Date Range</div>
                             <div class="mb-3">
                                 <label class="form-label">From Date</label>
@@ -539,10 +556,16 @@
                                     </form>
                                 </div>
                             </div>
+                            <div class="p-3">
+                                <h3>Total: ¥<span id="totalAmount">0.00</span></h3>
+                            </div>
                             <div class="table-responsive">
                                 <table class="table table-vcenter table-hover table-sm">
                                     <thead>
                                     <tr class="table-active">
+                                        <th style="text-align: center !important; width: 50px;">
+                                            <input type="checkbox" id="selectAll" class="form-check-input">
+                                        </th>
                                         <th class="col-date" style="text-align: center !important; width: 150px;">Date</th>
                                         <th style="text-align: center !important; width: 70px;">Sort</th>
                                         <th style="text-align: center !important; width: 200px;">Title</th>
@@ -582,6 +605,9 @@
                                         </td>
                                     </tr>
                                     <tr th:each="expense : ${expenses}" style="height: 40px;" th:styleappend="${expense.confirmed} ? 'text-decoration: line-through;' : ''">
+                                        <td style="text-align: center !important; padding: 0.25rem !important;">
+                                            <input type="checkbox" class="expense-checkbox form-check-input" th:data-amount="${expense.amount}">
+                                        </td>
                                         <td style="text-align: center !important; padding: 0.25rem !important;">
                                             <div th:text="${#temporals.format(expense.date, 'yyyy-MM-dd')}" style="text-align: center !important; display: block; font-size: 0.875rem; white-space: nowrap;">
                                                 2024-01-01
@@ -657,6 +683,30 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <script>
+                            // 计算选中复选框的总金额
+                            function calculateTotal() {
+                                let total = 0;
+                                document.querySelectorAll('.expense-checkbox:checked').forEach(checkbox => {
+                                    total += parseFloat(checkbox.dataset.amount) || 0;
+                                });
+                                document.getElementById('totalAmount').textContent = total.toFixed(2);
+                            }
+
+                            // 单个复选框点击事件
+                            document.querySelectorAll('.expense-checkbox').forEach(checkbox => {
+                                checkbox.addEventListener('change', calculateTotal);
+                            });
+
+                            // 全选/取消全选
+                            document.getElementById('selectAll').addEventListener('change', function() {
+                                const isChecked = this.checked;
+                                document.querySelectorAll('.expense-checkbox').forEach(checkbox => {
+                                    checkbox.checked = isChecked;
+                                });
+                                calculateTotal();
+                            });
+                            </script>
                         </div>
                     </div>
                 </div>

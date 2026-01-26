@@ -9,6 +9,7 @@ import org.springframework.format.annotation.NumberFormat;
 public class ExpenseFilterParams {
     private String categoryId;
     private String channelId;
+    private String tagId;
     
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
@@ -45,4 +46,6 @@ public class ExpenseFilterParams {
     public void setSortDescending(boolean sortDescending) { this.sortDescending = sortDescending; }
     public String getChannelId() { return channelId; }
     public void setChannelId(String channelId) { this.channelId = channelId; }
+    public String getTagId() { return tagId; }
+    public void setTagId(String tagId) { this.tagId = tagId; }
 }

@@ -203,6 +203,15 @@ public class ExpenseService {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("channel").get("id"), channelId));
         }
         
+        // Tag filter
+        String tagId = filterParams.getTagId();
+        if (tagId != null && !tagId.isEmpty()) {
+            spec = spec.and((root, query, cb) -> {
+                jakarta.persistence.criteria.Join<Object, Object> expenseTags = root.join("expenseTags", jakarta.persistence.criteria.JoinType.LEFT);
+                return cb.equal(expenseTags.get("tag").get("id"), tagId);
+            });
+        }
+        
         // Date range filter
         LocalDate startDate = filterParams.getStartDate();
         LocalDate endDate = filterParams.getEndDate();

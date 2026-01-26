@@ -51,8 +51,10 @@ public class ExpenseController {
         model.addAttribute("expenses", expenses);
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("channels", channelService.getAllChannels());
+        model.addAttribute("tags", tagService.getAllTags());
         model.addAttribute("selectedCategory", null);
         model.addAttribute("selectedChannel", null);
+        model.addAttribute("selectedTag", null);
         model.addAttribute("pageTitle", "Expense Management");
         return "expenses/list";
     }
@@ -66,8 +68,10 @@ public class ExpenseController {
             model.addAttribute("expenses", expenseService.getAllExpenses());
             model.addAttribute("categories", categoryService.getAllCategories());
             model.addAttribute("channels", channelService.getAllChannels());
+            model.addAttribute("tags", tagService.getAllTags());
             model.addAttribute("selectedCategory", null);
             model.addAttribute("selectedChannel", null);
+            model.addAttribute("selectedTag", null);
             return "expenses/list";
         }
         
@@ -78,8 +82,10 @@ public class ExpenseController {
         model.addAttribute("expenses", filteredExpenses);
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("channels", channelService.getAllChannels());
+        model.addAttribute("tags", tagService.getAllTags());
         model.addAttribute("selectedCategory", filterParams.getCategoryId());
         model.addAttribute("selectedChannel", filterParams.getChannelId());
+        model.addAttribute("selectedTag", filterParams.getTagId());
         model.addAttribute("startDate", filterParams.getStartDate() != null ? filterParams.getStartDate().toString() : "");
         model.addAttribute("endDate", filterParams.getEndDate() != null ? filterParams.getEndDate().toString() : "");
         model.addAttribute("minAmount", filterParams.getMinAmount() != null ? filterParams.getMinAmount().toString() : "");
