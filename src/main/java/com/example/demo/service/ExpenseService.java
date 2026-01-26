@@ -197,6 +197,12 @@ public class ExpenseService {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("category").get("id"), categoryId));
         }
         
+        // Channel filter
+        String channelId = filterParams.getChannelId();
+        if (channelId != null && !channelId.isEmpty()) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("channel").get("id"), channelId));
+        }
+        
         // Date range filter
         LocalDate startDate = filterParams.getStartDate();
         LocalDate endDate = filterParams.getEndDate();

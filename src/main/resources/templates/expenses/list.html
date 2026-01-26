@@ -419,13 +419,31 @@
                                         All Categories
                                     </label>
                                 </div>
-                                <div th:each="category : ${categories}">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="categoryId" th:id="${'category-' + category.id}" th:value="${category.id}" th:checked="${selectedCategory == category.id}">
-                                        <label class="form-check-label" th:for="${'category-' + category.id}">
-                                            <span th:text="${category.name}">Games</span>
-                                        </label>
-                                    </div>
+                                <div th:each="category : ${categories}" class="form-check">
+                                    <input class="form-check-input" type="radio" name="categoryId" th:id="'category' + ${category.id}" th:value="${category.id}" th:checked="${selectedCategory == category.id}">
+                                    <label class="form-check-label" th:for="'category' + ${category.id}">
+                                        <span th:if="${category.iconUrl}" class="avatar avatar-xs me-2" th:style="'background-image: url(' + ${category.iconUrl} + ')'" style="background-image: url(&quot;https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/star.svg&quot;)"></span>
+                                        <span th:unless="${category.iconUrl}" class="avatar avatar-xs me-2" th:style="'background-color: ' + ${category.color} + '; border-radius: 4px;'" style="background-color: rgb(32, 107, 196); border-radius: 4px;"></span>
+                                        <span th:text="${category.name}"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="subheader mb-2">Channel</div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="channelId" id="allChannels" value="" th:checked="${selectedChannel == null or selectedChannel.isEmpty()}">
+                                    <label class="form-check-label" for="allChannels">
+                                        All Channels
+                                    </label>
+                                </div>
+                                <div th:each="channel : ${channels}" class="form-check">
+                                    <input class="form-check-input" type="radio" name="channelId" th:id="'channel' + ${channel.id}" th:value="${channel.id}" th:checked="${selectedChannel == channel.id}">
+                                    <label class="form-check-label" th:for="'channel' + ${channel.id}">
+                                        <span th:if="${channel.iconUrl}" class="avatar avatar-xs me-2" th:style="'background-image: url(' + ${channel.iconUrl} + ')'" style="background-image: url(&quot;https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/star.svg&quot;)"></span>
+                                        <span th:unless="${channel.iconUrl}" class="avatar avatar-xs me-2" style="background-color: #206bc4"></span>
+                                        <span th:text="${channel.name}"></span>
+                                    </label>
                                 </div>
                             </div>
                             
