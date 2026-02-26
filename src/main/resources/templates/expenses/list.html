@@ -587,7 +587,7 @@
                                 </div>
                             </div>
                             <div class="p-3">
-                                <h3>Total: ¥<span id="totalAmount">0.00</span></h3>
+                                <h3>Total: ¥<span id="totalAmount">0.00</span> | Selected: <span id="selectedCount">0</span> items</h3>
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-vcenter table-hover table-sm">
@@ -714,13 +714,16 @@
                                 </table>
                             </div>
                             <script>
-                            // 计算选中复选框的总金额
+                            // 计算选中复选框的总金额和数量
                             function calculateTotal() {
                                 let total = 0;
+                                let count = 0;
                                 document.querySelectorAll('.expense-checkbox:checked').forEach(checkbox => {
                                     total += parseFloat(checkbox.dataset.amount) || 0;
+                                    count++;
                                 });
                                 document.getElementById('totalAmount').textContent = total.toFixed(2);
+                                document.getElementById('selectedCount').textContent = count;
                             }
 
                             // 单个复选框点击事件
