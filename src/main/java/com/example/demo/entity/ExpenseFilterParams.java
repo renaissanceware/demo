@@ -2,14 +2,16 @@ package com.example.demo.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 
 public class ExpenseFilterParams {
     private String categoryId;
-    private String channelId;
+    private List<String> channelIds;
     private String tagId;
+    private Boolean confirmed;
     
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
@@ -44,8 +46,10 @@ public class ExpenseFilterParams {
     public void setSortBy(String sortBy) { this.sortBy = sortBy; }
     public boolean isSortDescending() { return sortDescending; }
     public void setSortDescending(boolean sortDescending) { this.sortDescending = sortDescending; }
-    public String getChannelId() { return channelId; }
-    public void setChannelId(String channelId) { this.channelId = channelId; }
+    public List<String> getChannelIds() { return channelIds; }
+    public void setChannelIds(List<String> channelIds) { this.channelIds = channelIds; }
     public String getTagId() { return tagId; }
     public void setTagId(String tagId) { this.tagId = tagId; }
+    public Boolean getConfirmed() { return confirmed; }
+    public void setConfirmed(Boolean confirmed) { this.confirmed = confirmed; }
 }

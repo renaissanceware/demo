@@ -198,9 +198,9 @@ public class ExpenseService {
         }
         
         // Channel filter
-        String channelId = filterParams.getChannelId();
-        if (channelId != null && !channelId.isEmpty()) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("channel").get("id"), channelId));
+        List<String> channelIds = filterParams.getChannelIds();
+        if (channelIds != null && !channelIds.isEmpty()) {
+            spec = spec.and((root, query, cb) -> root.get("channel").get("id").in(channelIds));
         }
         
         // Tag filter
@@ -243,6 +243,12 @@ public class ExpenseService {
                             cb.like(cb.lower(root.get("title")), likeKeyword),
                             cb.like(cb.lower(root.get("note")), likeKeyword)
                     ));
+        }
+        
+        // Confirmed filter
+        Boolean confirmed = filterParams.getConfirmed();
+        if (confirmed != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("confirmed"), confirmed));
         }
         
         return spec;

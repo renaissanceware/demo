@@ -432,13 +432,13 @@
                             <div class="subheader mb-2">Channel</div>
                             <div class="mb-3">
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="channelId" id="allChannels" value="" th:checked="${selectedChannel == null or selectedChannel.isEmpty()}">
-                                    <label class="form-check-label" for="allChannels">
+                                    <input class="form-check-input" type="checkbox" id="selectAllChannels" onchange="toggleAllChannels(this)">
+                                    <label class="form-check-label" for="selectAllChannels">
                                         All Channels
                                     </label>
                                 </div>
                                 <div th:each="channel : ${channels}" class="form-check">
-                                    <input class="form-check-input" type="radio" name="channelId" th:id="'channel' + ${channel.id}" th:value="${channel.id}" th:checked="${selectedChannel == channel.id}">
+                                    <input class="form-check-input channel-checkbox" type="checkbox" name="channelIds" th:id="'channel' + ${channel.id}" th:value="${channel.id}" th:checked="${selectedChannels != null and selectedChannels.contains(channel.id)}">
                                     <label class="form-check-label" th:for="'channel' + ${channel.id}">
                                         <span th:if="${channel.iconUrl}" class="avatar avatar-xs me-2" th:style="'background-image: url(' + ${channel.iconUrl} + ')'" style="background-image: url(&quot;https://cdn.jsdelivr.net/npm/@tabler/icons@latest/icons/star.svg&quot;)"></span>
                                         <span th:unless="${channel.iconUrl}" class="avatar avatar-xs me-2" style="background-color: #206bc4"></span>
@@ -446,6 +446,14 @@
                                     </label>
                                 </div>
                             </div>
+                            <script>
+                                function toggleAllChannels(checkbox) {
+                                    const channelCheckboxes = document.querySelectorAll('.channel-checkbox');
+                                    channelCheckboxes.forEach(cb => {
+                                        cb.checked = checkbox.checked;
+                                    });
+                                }
+                            </script>
                             
                             <div class="subheader mb-2">Tag</div>
                             <div class="mb-3">
@@ -460,6 +468,28 @@
                                     <label class="form-check-label" th:for="'tag' + ${tag.id}">
                                         <span class="badge tag-status badge-dot" th:style="'background-color: ' + ${tag.color}"></span>
                                         <span th:text="${tag.name}"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="subheader mb-2">Confirmed</div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="confirmed" id="allConfirmed" value="" th:checked="${selectedConfirmed == null}">
+                                    <label class="form-check-label" for="allConfirmed">
+                                        All Status
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="confirmed" id="confirmedYes" value="true" th:checked="${selectedConfirmed == true}">
+                                    <label class="form-check-label" for="confirmedYes">
+                                        Confirmed
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="confirmed" id="confirmedNo" value="false" th:checked="${selectedConfirmed == false}">
+                                    <label class="form-check-label" for="confirmedNo">
+                                        Not Confirmed
                                     </label>
                                 </div>
                             </div>

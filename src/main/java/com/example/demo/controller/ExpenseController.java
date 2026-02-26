@@ -53,8 +53,9 @@ public class ExpenseController {
         model.addAttribute("channels", channelService.getAllChannels());
         model.addAttribute("tags", tagService.getAllTags());
         model.addAttribute("selectedCategory", null);
-        model.addAttribute("selectedChannel", null);
+        model.addAttribute("selectedChannels", null);
         model.addAttribute("selectedTag", null);
+        model.addAttribute("selectedConfirmed", null);
         model.addAttribute("pageTitle", "Expense Management");
         return "expenses/list";
     }
@@ -70,8 +71,9 @@ public class ExpenseController {
             model.addAttribute("channels", channelService.getAllChannels());
             model.addAttribute("tags", tagService.getAllTags());
             model.addAttribute("selectedCategory", null);
-            model.addAttribute("selectedChannel", null);
+            model.addAttribute("selectedChannels", null);
             model.addAttribute("selectedTag", null);
+            model.addAttribute("selectedConfirmed", null);
             return "expenses/list";
         }
         
@@ -84,8 +86,9 @@ public class ExpenseController {
         model.addAttribute("channels", channelService.getAllChannels());
         model.addAttribute("tags", tagService.getAllTags());
         model.addAttribute("selectedCategory", filterParams.getCategoryId());
-        model.addAttribute("selectedChannel", filterParams.getChannelId());
+        model.addAttribute("selectedChannels", filterParams.getChannelIds());
         model.addAttribute("selectedTag", filterParams.getTagId());
+        model.addAttribute("selectedConfirmed", filterParams.getConfirmed());
         model.addAttribute("startDate", filterParams.getStartDate() != null ? filterParams.getStartDate().toString() : "");
         model.addAttribute("endDate", filterParams.getEndDate() != null ? filterParams.getEndDate().toString() : "");
         model.addAttribute("minAmount", filterParams.getMinAmount() != null ? filterParams.getMinAmount().toString() : "");
