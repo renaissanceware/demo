@@ -53,6 +53,10 @@ public class Record {
     @JsonProperty("updatedAt")
     private LocalDateTime updatedAt;
 
+    @Column(name = "sort", nullable = false)
+    @JsonProperty("sort")
+    private Integer sort = 0;
+
     public Record() {
         this.createdAt = LocalDateTime.now();
     }
@@ -115,5 +119,13 @@ public class Record {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 }

@@ -17,7 +17,7 @@ public class RecordService {
     private RecordRepository recordRepository;
 
     public List<Record> getAllRecords() {
-        return recordRepository.findAllByOrderByCreatedAtAsc();
+        return recordRepository.findAllByOrderBySortAsc();
     }
 
     public Optional<Record> getRecordById(String id) {
@@ -25,6 +25,11 @@ public class RecordService {
     }
 
     public Record addRecord(@Valid Record record) {
+        // 设置排序值：如果没有指定，则设置为该类型当前最大排序值 + 1
+        if (record.getSort() == null || record.getSort() == 0) {
+            Integer maxSort = recordRepository.findMaxSortByType(record.getType());
+            record.setSort(maxSort != null ? maxSort + 1 : 1);
+        }
         return recordRepository.save(record);
     }
 
@@ -76,7 +81,18 @@ public class RecordService {
     }
 
     public List<Record> getRecordsByType(String type) {
-        return recordRepository.findByTypeOrderByCreatedAtAsc(type);
+        return recordRepository.findByTypeOrderBySortAsc(type);
+    }
+
+    // 批量更新排序
+    public void updateSortOrder(List<String> ids) {
+        for (int i = 0; i < ids.size(); i++) {
+            String id = ids.get(i);
+            Record record = recordRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Record not found with id: " + id));
+            record.setSort(i + 1);
+            recordRepository.save(record);
+        }
     }
 
     public BigDecimal getTotalIncome() {

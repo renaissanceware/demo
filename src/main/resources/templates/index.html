@@ -146,15 +146,16 @@
                                 <table class="table table-vcenter table-hover table-sm">
                                     <thead>
                                         <tr class="table-active">
+                                            <th class="col-drag" style="text-align: center !important; width: 30px;"></th>
                                             <th class="col-title" style="text-align: center !important; width: 150px;">Title</th>
                                             <th class="col-amount" style="text-align: center !important; width: 80px;">Amount</th>
                                             <th class="col-type" style="text-align: center !important; width: 70px;">Type</th>
                                             <th class="col-action" style="text-align: center !important; width: 60px;">Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="income-tbody">
                                         <tr th:if="${records.![type == 'income'].empty}">
-                                            <td colspan="4" class="text-center py-3">
+                                            <td colspan="5" class="text-center py-3">
                                                 <div class="empty">
                                                     <div class="empty-img" style="height: 80px;">
                                                         <img src="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/assets/img/illustrations/missing-translation.svg" height="80" alt="">
@@ -164,13 +165,16 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                        <tr th:each="record : ${records}" th:if="${record.type == 'income'}" style="height: 40px;">
+                                        <tr th:each="record : ${records}" th:if="${record.type == 'income'}" style="height: 40px;" th:attr="data-id=${record.id}" draggable="true" class="draggable-row">
+                                            <td class="col-drag" style="text-align: center !important; padding: 0.25rem !important; cursor: move;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-grip-vertical"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M9 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M9 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg>
+                                            </td>
                                             <td class="col-title" style="text-align: center !important; padding: 0.25rem !important;">
-                                                <input type="text" class="form-control record-input title-input" 
-                                                       th:attr="data-id=${record.id}, data-field='title'" 
-                                                       th:value="${record.title}" 
-                                                       onblur="saveRecord(this)" 
-                                                       onkeypress="if(event.key === 'Enter') { saveRecord(this); this.blur(); }" 
+                                                <input type="text" class="form-control record-input title-input"
+                                                       th:attr="data-id=${record.id}, data-field='title'"
+                                                       th:value="${record.title}"
+                                                       onblur="saveRecord(this)"
+                                                       onkeypress="if(event.key === 'Enter') { saveRecord(this); this.blur(); }"
                                                        style="text-align: center; font-weight: 500; font-size: 0.875rem; padding: 4px; width: 100%;">
                                             </td>
                                             <td class="col-amount" style="text-align: center !important; padding: 0.25rem !important;">
@@ -227,15 +231,16 @@
                                 <table class="table table-vcenter table-hover table-sm">
                                     <thead>
                                         <tr class="table-active">
+                                            <th class="col-drag" style="text-align: center !important; width: 30px;"></th>
                                             <th class="col-title" style="text-align: center !important; width: 150px;">Title</th>
                                             <th class="col-amount" style="text-align: center !important; width: 80px;">Amount</th>
                                             <th class="col-type" style="text-align: center !important; width: 70px;">Type</th>
                                             <th class="col-action" style="text-align: center !important; width: 60px;">Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="expense-tbody">
                                         <tr th:if="${records.![type == 'expense'].empty}">
-                                            <td colspan="4" class="text-center py-3">
+                                            <td colspan="5" class="text-center py-3">
                                                 <div class="empty">
                                                     <div class="empty-img" style="height: 80px;">
                                                         <img src="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/assets/img/illustrations/missing-translation.svg" height="80" alt="">
@@ -245,13 +250,16 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                        <tr th:each="record : ${records}" th:if="${record.type == 'expense'}" style="height: 40px;">
+                                        <tr th:each="record : ${records}" th:if="${record.type == 'expense'}" style="height: 40px;" th:attr="data-id=${record.id}" draggable="true" class="draggable-row">
+                                            <td class="col-drag" style="text-align: center !important; padding: 0.25rem !important; cursor: move;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-grip-vertical"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M9 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M9 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg>
+                                            </td>
                                             <td class="col-title" style="text-align: center !important; padding: 0.25rem !important;">
-                                                <input type="text" class="form-control record-input title-input" 
-                                                       th:attr="data-id=${record.id}, data-field='title'" 
-                                                       th:value="${record.title}" 
-                                                       onblur="saveRecord(this)" 
-                                                       onkeypress="if(event.key === 'Enter') { saveRecord(this); this.blur(); }" 
+                                                <input type="text" class="form-control record-input title-input"
+                                                       th:attr="data-id=${record.id}, data-field='title'"
+                                                       th:value="${record.title}"
+                                                       onblur="saveRecord(this)"
+                                                       onkeypress="if(event.key === 'Enter') { saveRecord(this); this.blur(); }"
                                                        style="text-align: center; font-weight: 500; font-size: 0.875rem; padding: 4px; width: 100%;">
                                             </td>
                                             <td class="col-amount" style="text-align: center !important; padding: 0.25rem !important;">
@@ -456,8 +464,19 @@
         const typeClass = type === 'income' ? 'bg-red-lt' : 'bg-green-lt';
         const amountClass = 'text-black';
         
-        // 构建行内容
+        // 构建行内容 - 添加拖拽列
         newRow.innerHTML = `
+            <td class="col-drag" style="text-align: center !important; padding: 0.25rem !important; width: 30px; cursor: default;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-grip-vertical" style="opacity: 0.3;">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M9 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                    <path d="M9 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                    <path d="M9 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                    <path d="M15 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                    <path d="M15 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                    <path d="M15 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                </svg>
+            </td>
             <td class="col-title" style="text-align: center !important; padding: 0.25rem !important;">
                 <input type="text" class="form-control record-input title-input" 
                        data-field="title" 
@@ -679,12 +698,12 @@
         // 获取所有选中的记录
         const checkboxes = document.querySelectorAll(`input[name="selected-${type}-ids"]:checked`);
         const selectedIds = Array.from(checkboxes).map(cb => cb.value);
-        
+
         if (selectedIds.length === 0) {
             alert('Please select at least one record to delete.');
             return;
         }
-        
+
         if (confirm('Are you sure you want to delete the selected records?')) {
             // 发送AJAX请求删除数据
             const xhr = new XMLHttpRequest();
@@ -704,6 +723,125 @@
             xhr.send('ids=' + selectedIds.join(',') + '&type=' + type);
         }
     }
+
+    // 拖拽排序功能
+    let draggedRow = null;
+    let draggedFromTbody = null;
+
+    function initDragAndDrop() {
+        const tbodies = document.querySelectorAll('#income-tbody, #expense-tbody');
+
+        tbodies.forEach(tbody => {
+            // 只处理实际的数据行（排除空数据提示行）
+            const rows = tbody.querySelectorAll('tr.draggable-row');
+
+            rows.forEach(row => {
+                row.addEventListener('dragstart', handleDragStart);
+                row.addEventListener('dragend', handleDragEnd);
+                row.addEventListener('dragover', handleDragOver);
+                row.addEventListener('drop', handleDrop);
+                row.addEventListener('dragenter', handleDragEnter);
+                row.addEventListener('dragleave', handleDragLeave);
+            });
+        });
+    }
+
+    function handleDragStart(e) {
+        draggedRow = this;
+        draggedFromTbody = this.closest('tbody');
+        this.style.opacity = '0.4';
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', this.innerHTML);
+    }
+
+    function handleDragEnd(e) {
+        this.style.opacity = '1';
+
+        // 清除所有拖拽样式
+        const tbodies = document.querySelectorAll('#income-tbody, #expense-tbody');
+        tbodies.forEach(tbody => {
+            const rows = tbody.querySelectorAll('tr');
+            rows.forEach(row => {
+                row.classList.remove('drag-over');
+                row.style.borderTop = '';
+                row.style.borderBottom = '';
+            });
+        });
+
+        draggedRow = null;
+        draggedFromTbody = null;
+    }
+
+    function handleDragOver(e) {
+        if (e.preventDefault) {
+            e.preventDefault();
+        }
+        e.dataTransfer.dropEffect = 'move';
+        return false;
+    }
+
+    function handleDragEnter(e) {
+        // 只允许在同一个 tbody 内拖拽
+        if (this.closest('tbody') === draggedFromTbody && this !== draggedRow) {
+            this.style.borderTop = '2px solid #206bc4';
+        }
+    }
+
+    function handleDragLeave(e) {
+        this.style.borderTop = '';
+    }
+
+    function handleDrop(e) {
+        if (e.stopPropagation) {
+            e.stopPropagation();
+        }
+
+        // 只允许在同一个 tbody 内拖拽
+        if (draggedRow !== this && this.closest('tbody') === draggedFromTbody) {
+            const tbody = this.closest('tbody');
+            const allRows = Array.from(tbody.querySelectorAll('tr.draggable-row'));
+            const draggedIndex = allRows.indexOf(draggedRow);
+            const droppedIndex = allRows.indexOf(this);
+
+            if (draggedIndex < droppedIndex) {
+                this.parentNode.insertBefore(draggedRow, this.nextSibling);
+            } else {
+                this.parentNode.insertBefore(draggedRow, this);
+            }
+
+            // 更新排序
+            updateSortOrder(tbody);
+        }
+
+        return false;
+    }
+
+    function updateSortOrder(tbody) {
+        const rows = tbody.querySelectorAll('tr.draggable-row');
+        const ids = Array.from(rows).map(row => row.getAttribute('data-id'));
+
+        if (ids.length === 0) return;
+
+        // 发送AJAX请求更新排序
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/update-sort', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    console.log('Sort order updated successfully');
+                } else {
+                    console.error('Failed to update sort order');
+                }
+            }
+        };
+        xhr.send(JSON.stringify({ ids: ids }));
+    }
+
+    // 页面加载完成后初始化拖拽功能
+    document.addEventListener('DOMContentLoaded', function() {
+        initDragAndDrop();
+    });
 </script>
 </body>
 </html>

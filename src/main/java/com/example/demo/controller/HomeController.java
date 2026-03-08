@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 @Controller
 public class HomeController {
@@ -107,16 +108,52 @@ public class HomeController {
         stats.setBalance(recordService.getBalance());
         return stats;
     }
-    
+
+    // 更新排序接口
+    @PostMapping("/update-sort")
+    @ResponseBody
+    public String updateSort(@RequestBody Map<String, List<String>> request) {
+        List<String> ids = request.get("ids");
+        if (ids == null || ids.isEmpty()) {
+            return "error: ids is empty";
+        }
+        try {
+            recordService.updateSortOrder(ids);
+            return "success";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "error: " + e.getMessage();
+        }
+    }
+
     // 内部类用于统计数据传输
     private static class StatsDTO {
+        private BigDecimal totalIncome;
+        private BigDecimal totalExpense;
+        private BigDecimal balance;
+
         public void setTotalIncome(BigDecimal totalIncome) {
+            this.totalIncome = totalIncome;
         }
-        
+
         public void setTotalExpense(BigDecimal totalExpense) {
+            this.totalExpense = totalExpense;
         }
-        
+
         public void setBalance(BigDecimal balance) {
+            this.balance = balance;
+        }
+
+        public BigDecimal getTotalIncome() {
+            return totalIncome;
+        }
+
+        public BigDecimal getTotalExpense() {
+            return totalExpense;
+        }
+
+        public BigDecimal getBalance() {
+            return balance;
         }
     }
 }
