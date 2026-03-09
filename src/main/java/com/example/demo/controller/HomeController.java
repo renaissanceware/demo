@@ -31,11 +31,15 @@ public class HomeController {
         BigDecimal totalExpense = recordService.getTotalExpense();
         BigDecimal balance = recordService.getBalance();
         
+        // 计算income减去expense的差值
+        BigDecimal incomeMinusExpense = totalIncome.subtract(totalExpense);
+        
         // 添加到模型
         model.addAttribute("records", records);
         model.addAttribute("totalIncome", totalIncome);
         model.addAttribute("totalExpense", totalExpense);
         model.addAttribute("balance", balance);
+        model.addAttribute("incomeMinusExpense", incomeMinusExpense);
         model.addAttribute("newRecord", new Record());
         
         return "index";
@@ -103,9 +107,13 @@ public class HomeController {
     @ResponseBody
     public StatsDTO getStats() {
         StatsDTO stats = new StatsDTO();
-        stats.setTotalIncome(recordService.getTotalIncome());
-        stats.setTotalExpense(recordService.getTotalExpense());
-        stats.setBalance(recordService.getBalance());
+        BigDecimal totalIncome = recordService.getTotalIncome();
+        BigDecimal totalExpense = recordService.getTotalExpense();
+        BigDecimal balance = recordService.getBalance();
+        stats.setTotalIncome(totalIncome);
+        stats.setTotalExpense(totalExpense);
+        stats.setBalance(balance);
+        stats.setIncomeMinusExpense(totalIncome.subtract(totalExpense));
         return stats;
     }
 
@@ -131,6 +139,7 @@ public class HomeController {
         private BigDecimal totalIncome;
         private BigDecimal totalExpense;
         private BigDecimal balance;
+        private BigDecimal incomeMinusExpense;
 
         public void setTotalIncome(BigDecimal totalIncome) {
             this.totalIncome = totalIncome;
@@ -144,6 +153,10 @@ public class HomeController {
             this.balance = balance;
         }
 
+        public void setIncomeMinusExpense(BigDecimal incomeMinusExpense) {
+            this.incomeMinusExpense = incomeMinusExpense;
+        }
+
         public BigDecimal getTotalIncome() {
             return totalIncome;
         }
@@ -154,6 +167,10 @@ public class HomeController {
 
         public BigDecimal getBalance() {
             return balance;
+        }
+
+        public BigDecimal getIncomeMinusExpense() {
+            return incomeMinusExpense;
         }
     }
 }

@@ -25,8 +25,8 @@ public interface RecordRepository extends JpaRepository<Record, String> {
     @Query("SELECT SUM(r.amount) FROM Record r WHERE r.type = 'expense'")
     BigDecimal getTotalExpense();
 
-    // 统计差额（收入-支出）
-    @Query("SELECT (SELECT COALESCE(SUM(r.amount), 0) FROM Record r WHERE r.type = 'income') - (SELECT COALESCE(SUM(r.amount), 0) FROM Record r WHERE r.type = 'expense')")
+    // 统计差额（Balance Records的总和）
+    @Query("SELECT COALESCE(SUM(r.amount), 0) FROM Record r WHERE r.type = 'balance'")
     BigDecimal getBalance();
 
     // 查询某类型的最大排序值

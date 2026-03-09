@@ -125,172 +125,260 @@
         <div class="page-body">
             <div class="container-xl">
                 <div class="row">
-                    <!-- 左边表格：Income -->
-                    <div class="col-md-6 col-lg-5">
+                    <!-- 记录表格 Tab -->
+                    <div class="col-md-10 col-lg-5">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">Income Records</h3>
-                                <div class="card-actions">
-                                    <div class="btn-list">
-                                        <button type="button" class="btn btn-xs btn-icon btn-action" onclick="addEmptyRow('income')" title="Add" style="padding: 0 !important; margin: 0 !important; min-height: auto; height: 1.25rem; width: 1.25rem; display: flex; align-items: center; justify-content: center;">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                <line x1="12" y1="5" x2="12" y2="19"/>
-                                                <line x1="5" y1="12" x2="19" y2="12"/>
-                                            </svg>
-                                        </button>
-                                    </div>
+                                <div class="nav nav-tabs" id="recordTabs" role="tablist">
+                                    <button class="nav-link active" id="income-tab" data-bs-toggle="tab" data-bs-target="#income" type="button" role="tab" aria-controls="income" aria-selected="true">
+                                        Income Records
+                                    </button>
+                                    <button class="nav-link" id="expense-tab" data-bs-toggle="tab" data-bs-target="#expense" type="button" role="tab" aria-controls="expense" aria-selected="false">
+                                        Expense Records
+                                    </button>
+                                    <button class="nav-link" id="balance-tab" data-bs-toggle="tab" data-bs-target="#balance" type="button" role="tab" aria-controls="balance" aria-selected="false">
+                                        Balance Records
+                                    </button>
                                 </div>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table table-vcenter table-hover table-sm">
-                                    <thead>
-                                        <tr class="table-active">
-                                            <th class="col-drag" style="text-align: center !important; width: 30px;"></th>
-                                            <th class="col-title" style="text-align: center !important; width: 150px;">Title</th>
-                                            <th class="col-amount" style="text-align: center !important; width: 80px;">Amount</th>
-                                            <th class="col-type" style="text-align: center !important; width: 70px;">Type</th>
-                                            <th class="col-action" style="text-align: center !important; width: 60px;">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="income-tbody">
-                                        <tr th:if="${records.![type == 'income'].empty}">
-                                            <td colspan="5" class="text-center py-3">
-                                                <div class="empty">
-                                                    <div class="empty-img" style="height: 80px;">
-                                                        <img src="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/assets/img/illustrations/missing-translation.svg" height="80" alt="">
-                                                    </div>
-                                                    <p class="empty-title m-1">No income records found</p>
-                                                    <p class="empty-subtitle text-muted m-1">No income records available.</p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr th:each="record : ${records}" th:if="${record.type == 'income'}" style="height: 40px;" th:attr="data-id=${record.id}" draggable="true" class="draggable-row">
-                                            <td class="col-drag" style="text-align: center !important; padding: 0.25rem !important; cursor: move;">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-grip-vertical"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M9 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M9 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg>
-                                            </td>
-                                            <td class="col-title" style="text-align: center !important; padding: 0.25rem !important;">
-                                                <input type="text" class="form-control record-input title-input"
-                                                       th:attr="data-id=${record.id}, data-field='title'"
-                                                       th:value="${record.title}"
-                                                       onblur="saveRecord(this)"
-                                                       onkeypress="if(event.key === 'Enter') { saveRecord(this); this.blur(); }"
-                                                       style="text-align: center; font-weight: 500; font-size: 0.875rem; padding: 4px; width: 100%;">
-                                            </td>
-                                            <td class="col-amount" style="text-align: center !important; padding: 0.25rem !important;">
-                                                <input type="number" step="0.01" min="0.01" class="form-control record-input amount-input text-black" 
-                                                       th:attr="data-id=${record.id}, data-field='amount'" 
-                                                       th:value="${record.amount}" 
-                                                       onblur="saveRecord(this)" 
-                                                       onkeypress="if(event.key === 'Enter') { saveRecord(this); this.blur(); }" 
-                                                       style="text-align: center; font-weight: 500; font-size: 0.875rem; padding: 4px; width: 100%;">
-                                            </td>
-                                            <td class="col-type" style="text-align: center !important; padding: 0.25rem !important; width: 70px;">
-                                                <span th:class="'badge ' + (${record.type == 'income'} ? 'bg-red-lt' : 'bg-green-lt')" 
-                                                      style="text-align: center !important; display: inline-block; font-size: 0.75rem; padding: 0.25rem 0.5rem;" 
-                                                      th:text="${record.type == 'income' ? 'Income' : 'Expense'}">
-                                                    Income
-                                                </span>
-                                            </td>
-                                            <td class="col-action" style="text-align: center !important; padding: 0 !important; height: 100%;">
-                                                <div class="btn-list flex-nowrap" style="justify-content: center !important; gap: 0.125rem; margin: 0; padding: 0;">
-                                                    <button class="btn btn-xs btn-icon btn-action" 
-                                                            th:attr="data-id=${record.id}, data-type='income'" 
-                                                            onclick="deleteRecord(this)" 
-                                                            title="Delete" 
-                                                            style="padding: 0 !important; margin: 0 !important; min-height: auto; height: 1.25rem; width: 1.25rem; display: flex; align-items: center; justify-content: center;">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 右边表格：Expense -->
-                    <div class="col-md-6 col-lg-5">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">Expense Records</h3>
-                                <div class="card-actions">
-                                    <div class="btn-list">
-                                        <button type="button" class="btn btn-xs btn-icon btn-action" onclick="addEmptyRow('expense')" title="Add" style="padding: 0 !important; margin: 0 !important; min-height: auto; height: 1.25rem; width: 1.25rem; display: flex; align-items: center; justify-content: center;">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                <line x1="12" y1="5" x2="12" y2="19"/>
-                                                <line x1="5" y1="12" x2="19" y2="12"/>
-                                            </svg>
-                                        </button>
+                            <div class="card-body">
+                                <div class="tab-content" id="recordTabsContent">
+                                    <!-- Income Tab -->
+                                    <div class="tab-pane fade show active" id="income" role="tabpanel" aria-labelledby="income-tab">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h4 class="card-title m-0">Income Records</h4>
+                                            <button type="button" class="btn btn-xs btn-icon btn-action" onclick="addEmptyRow('income')" title="Add" style="padding: 0 !important; margin: 0 !important; min-height: auto; height: 1.25rem; width: 1.25rem; display: flex; align-items: center; justify-content: center;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                    <line x1="12" y1="5" x2="12" y2="19"/>
+                                                    <line x1="5" y1="12" x2="19" y2="12"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-vcenter table-hover table-sm">
+                                                <thead>
+                                                    <tr class="table-active">
+                                                        <th class="col-drag" style="text-align: center !important; width: 30px;"></th>
+                                                        <th class="col-title" style="text-align: center !important; width: 150px;">Title</th>
+                                                        <th class="col-amount" style="text-align: center !important; width: 80px;">Amount</th>
+                                                        <th class="col-type" style="text-align: center !important; width: 70px;">Type</th>
+                                                        <th class="col-action" style="text-align: center !important; width: 60px;">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="income-tbody">
+                                                    <tr th:if="${records.![type == 'income'].empty}">
+                                                        <td colspan="5" class="text-center py-3">
+                                                            <div class="empty">
+                                                                <div class="empty-img" style="height: 80px;">
+                                                                    <img src="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/assets/img/illustrations/missing-translation.svg" height="80" alt="">
+                                                                </div>
+                                                                <p class="empty-title m-1">No income records found</p>
+                                                                <p class="empty-subtitle text-muted m-1">No income records available.</p>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr th:each="record : ${records}" th:if="${record.type == 'income'}" style="height: 40px;" th:attr="data-id=${record.id}" draggable="true" class="draggable-row">
+                                                        <td class="col-drag" style="text-align: center !important; padding: 0.25rem !important; cursor: move;">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-grip-vertical"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M9 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M9 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg>
+                                                        </td>
+                                                        <td class="col-title" style="text-align: center !important; padding: 0.25rem !important;">
+                                                            <input type="text" class="form-control record-input title-input"
+                                                                   th:attr="data-id=${record.id}, data-field='title'"
+                                                                   th:value="${record.title}"
+                                                                   onblur="saveRecord(this)"
+                                                                   onkeypress="if(event.key === 'Enter') { saveRecord(this); this.blur(); }"
+                                                                   style="text-align: center; font-weight: 500; font-size: 0.875rem; padding: 4px; width: 100%;">
+                                                        </td>
+                                                        <td class="col-amount" style="text-align: center !important; padding: 0.25rem !important;">
+                                                            <input type="number" step="0.01" min="0.01" class="form-control record-input amount-input text-black" 
+                                                                   th:attr="data-id=${record.id}, data-field='amount'" 
+                                                                   th:value="${record.amount}" 
+                                                                   onblur="saveRecord(this)" 
+                                                                   onkeypress="if(event.key === 'Enter') { saveRecord(this); this.blur(); }" 
+                                                                   style="text-align: center; font-weight: 500; font-size: 0.875rem; padding: 4px; width: 100%;">
+                                                        </td>
+                                                        <td class="col-type" style="text-align: center !important; padding: 0.25rem !important; width: 70px;">
+                                                            <span th:class="'badge ' + (${record.type == 'income'} ? 'bg-red-lt' : 'bg-green-lt')" 
+                                                                  style="text-align: center !important; display: inline-block; font-size: 0.75rem; padding: 0.25rem 0.5rem;" 
+                                                                  th:text="${record.type == 'income' ? 'Income' : 'Expense'}">
+                                                                Income
+                                                            </span>
+                                                        </td>
+                                                        <td class="col-action" style="text-align: center !important; padding: 0 !important; height: 100%;">
+                                                            <div class="btn-list flex-nowrap" style="justify-content: center !important; gap: 0.125rem; margin: 0; padding: 0;">
+                                                                <button class="btn btn-xs btn-icon btn-action" 
+                                                                        th:attr="data-id=${record.id}, data-type='income'" 
+                                                                        onclick="deleteRecord(this)" 
+                                                                        title="Delete" 
+                                                                        style="padding: 0 !important; margin: 0 !important; min-height: auto; height: 1.25rem; width: 1.25rem; display: flex; align-items: center; justify-content: center;">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- Expense Tab -->
+                                    <div class="tab-pane fade" id="expense" role="tabpanel" aria-labelledby="expense-tab">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h4 class="card-title m-0">Expense Records</h4>
+                                            <button type="button" class="btn btn-xs btn-icon btn-action" onclick="addEmptyRow('expense')" title="Add" style="padding: 0 !important; margin: 0 !important; min-height: auto; height: 1.25rem; width: 1.25rem; display: flex; align-items: center; justify-content: center;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                    <line x1="12" y1="5" x2="12" y2="19"/>
+                                                    <line x1="5" y1="12" x2="19" y2="12"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-vcenter table-hover table-sm">
+                                                <thead>
+                                                    <tr class="table-active">
+                                                        <th class="col-drag" style="text-align: center !important; width: 30px;"></th>
+                                                        <th class="col-title" style="text-align: center !important; width: 150px;">Title</th>
+                                                        <th class="col-amount" style="text-align: center !important; width: 80px;">Amount</th>
+                                                        <th class="col-type" style="text-align: center !important; width: 70px;">Type</th>
+                                                        <th class="col-action" style="text-align: center !important; width: 60px;">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="expense-tbody">
+                                                    <tr th:if="${records.![type == 'expense'].empty}">
+                                                        <td colspan="5" class="text-center py-3">
+                                                            <div class="empty">
+                                                                <div class="empty-img" style="height: 80px;">
+                                                                    <img src="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/assets/img/illustrations/missing-translation.svg" height="80" alt="">
+                                                                </div>
+                                                                <p class="empty-title m-1">No expense records found</p>
+                                                                <p class="empty-subtitle text-muted m-1">No expense records available.</p>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr th:each="record : ${records}" th:if="${record.type == 'expense'}" style="height: 40px;" th:attr="data-id=${record.id}" draggable="true" class="draggable-row">
+                                                        <td class="col-drag" style="text-align: center !important; padding: 0.25rem !important; cursor: move;">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-grip-vertical"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M9 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M9 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg>
+                                                        </td>
+                                                        <td class="col-title" style="text-align: center !important; padding: 0.25rem !important;">
+                                                            <input type="text" class="form-control record-input title-input"
+                                                                   th:attr="data-id=${record.id}, data-field='title'"
+                                                                   th:value="${record.title}"
+                                                                   onblur="saveRecord(this)"
+                                                                   onkeypress="if(event.key === 'Enter') { saveRecord(this); this.blur(); }"
+                                                                   style="text-align: center; font-weight: 500; font-size: 0.875rem; padding: 4px; width: 100%;">
+                                                        </td>
+                                                        <td class="col-amount" style="text-align: center !important; padding: 0.25rem !important;">
+                                                            <input type="number" step="0.01" min="0.01" class="form-control record-input amount-input text-black" 
+                                                                   th:attr="data-id=${record.id}, data-field='amount'" 
+                                                                   th:value="${record.amount}" 
+                                                                   onblur="saveRecord(this)" 
+                                                                   onkeypress="if(event.key === 'Enter') { saveRecord(this); this.blur(); }" 
+                                                                   style="text-align: center; font-weight: 500; font-size: 0.875rem; padding: 4px; width: 100%;">
+                                                        </td>
+                                                        <td class="col-type" style="text-align: center !important; padding: 0.25rem !important; width: 70px;">
+                                                            <span th:class="'badge ' + (${record.type == 'income'} ? 'bg-red-lt' : 'bg-green-lt')" 
+                                                                  style="text-align: center !important; display: inline-block; font-size: 0.75rem; padding: 0.25rem 0.5rem;" 
+                                                                  th:text="${record.type == 'income' ? 'Income' : 'Expense'}">
+                                                                Expense
+                                                            </span>
+                                                        </td>
+                                                        <td class="col-action" style="text-align: center !important; padding: 0 !important; height: 100%;">
+                                                            <div class="btn-list flex-nowrap" style="justify-content: center !important; gap: 0.125rem; margin: 0; padding: 0;">
+                                                                <button class="btn btn-xs btn-icon btn-action" 
+                                                                        th:attr="data-id=${record.id}, data-type='expense'" 
+                                                                        onclick="deleteRecord(this)" 
+                                                                        title="Delete" 
+                                                                        style="padding: 0 !important; margin: 0 !important; min-height: auto; height: 1.25rem; width: 1.25rem; display: flex; align-items: center; justify-content: center;">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- Balance Tab -->
+                                    <div class="tab-pane fade" id="balance" role="tabpanel" aria-labelledby="balance-tab">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h4 class="card-title m-0">Balance Records</h4>
+                                            <button type="button" class="btn btn-xs btn-icon btn-action" onclick="addEmptyRow('balance')" title="Add" style="padding: 0 !important; margin: 0 !important; min-height: auto; height: 1.25rem; width: 1.25rem; display: flex; align-items: center; justify-content: center;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="12" height="12" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                    <line x1="12" y1="5" x2="12" y2="19"/>
+                                                    <line x1="5" y1="12" x2="19" y2="12"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-vcenter table-hover table-sm">
+                                                <thead>
+                                                    <tr class="table-active">
+                                                        <th class="col-drag" style="text-align: center !important; width: 30px;"></th>
+                                                        <th class="col-title" style="text-align: center !important; width: 150px;">Title</th>
+                                                        <th class="col-amount" style="text-align: center !important; width: 80px;">Amount</th>
+                                                        <th class="col-type" style="text-align: center !important; width: 70px;">Type</th>
+                                                        <th class="col-action" style="text-align: center !important; width: 60px;">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="balance-tbody">
+                                                    <tr th:if="${records.![type == 'balance'].empty}">
+                                                        <td colspan="5" class="text-center py-3">
+                                                            <div class="empty">
+                                                                <div class="empty-img" style="height: 80px;">
+                                                                    <img src="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/assets/img/illustrations/missing-translation.svg" height="80" alt="">
+                                                                </div>
+                                                                <p class="empty-title m-1">No balance records found</p>
+                                                                <p class="empty-subtitle text-muted m-1">No balance records available.</p>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr th:each="record : ${records}" th:if="${record.type == 'balance'}" style="height: 40px;" th:attr="data-id=${record.id}" draggable="true" class="draggable-row">
+                                                        <td class="col-drag" style="text-align: center !important; padding: 0.25rem !important; cursor: move;">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-grip-vertical"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M9 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M9 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg>
+                                                        </td>
+                                                        <td class="col-title" style="text-align: center !important; padding: 0.25rem !important;">
+                                                            <input type="text" class="form-control record-input title-input"
+                                                                   th:attr="data-id=${record.id}, data-field='title'"
+                                                                   th:value="${record.title}"
+                                                                   onblur="saveRecord(this)"
+                                                                   onkeypress="if(event.key === 'Enter') { saveRecord(this); this.blur(); }"
+                                                                   style="text-align: center; font-weight: 500; font-size: 0.875rem; padding: 4px; width: 100%;">
+                                                        </td>
+                                                        <td class="col-amount" style="text-align: center !important; padding: 0.25rem !important;">
+                                                            <input type="number" step="0.01" min="0.01" class="form-control record-input amount-input text-black"
+                                                                   th:attr="data-id=${record.id}, data-field='amount'"
+                                                                   th:value="${record.amount}"
+                                                                   onblur="saveRecord(this)"
+                                                                   onkeypress="if(event.key === 'Enter') { saveRecord(this); this.blur(); }"
+                                                                   style="text-align: center; font-weight: 500; font-size: 0.875rem; padding: 4px; width: 100%;">
+                                                        </td>
+                                                        <td class="col-type" style="text-align: center !important; padding: 0.25rem !important; width: 70px;">
+                                                            <span class="badge bg-primary-lt"
+                                                                  style="text-align: center !important; display: inline-block; font-size: 0.75rem; padding: 0.25rem 0.5rem;">
+                                                                Balance
+                                                            </span>
+                                                        </td>
+                                                        <td class="col-action" style="text-align: center !important; padding: 0 !important; height: 100%;">
+                                                            <div class="btn-list flex-nowrap" style="justify-content: center !important; gap: 0.125rem; margin: 0; padding: 0;">
+                                                                <button class="btn btn-xs btn-icon btn-action"
+                                                                        th:attr="data-id=${record.id}, data-type='balance'"
+                                                                        onclick="deleteRecord(this)"
+                                                                        title="Delete"
+                                                                        style="padding: 0 !important; margin: 0 !important; min-height: auto; height: 1.25rem; width: 1.25rem; display: flex; align-items: center; justify-content: center;">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table table-vcenter table-hover table-sm">
-                                    <thead>
-                                        <tr class="table-active">
-                                            <th class="col-drag" style="text-align: center !important; width: 30px;"></th>
-                                            <th class="col-title" style="text-align: center !important; width: 150px;">Title</th>
-                                            <th class="col-amount" style="text-align: center !important; width: 80px;">Amount</th>
-                                            <th class="col-type" style="text-align: center !important; width: 70px;">Type</th>
-                                            <th class="col-action" style="text-align: center !important; width: 60px;">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="expense-tbody">
-                                        <tr th:if="${records.![type == 'expense'].empty}">
-                                            <td colspan="5" class="text-center py-3">
-                                                <div class="empty">
-                                                    <div class="empty-img" style="height: 80px;">
-                                                        <img src="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/assets/img/illustrations/missing-translation.svg" height="80" alt="">
-                                                    </div>
-                                                    <p class="empty-title m-1">No expense records found</p>
-                                                    <p class="empty-subtitle text-muted m-1">No expense records available.</p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr th:each="record : ${records}" th:if="${record.type == 'expense'}" style="height: 40px;" th:attr="data-id=${record.id}" draggable="true" class="draggable-row">
-                                            <td class="col-drag" style="text-align: center !important; padding: 0.25rem !important; cursor: move;">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-grip-vertical"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M9 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M9 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M15 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg>
-                                            </td>
-                                            <td class="col-title" style="text-align: center !important; padding: 0.25rem !important;">
-                                                <input type="text" class="form-control record-input title-input"
-                                                       th:attr="data-id=${record.id}, data-field='title'"
-                                                       th:value="${record.title}"
-                                                       onblur="saveRecord(this)"
-                                                       onkeypress="if(event.key === 'Enter') { saveRecord(this); this.blur(); }"
-                                                       style="text-align: center; font-weight: 500; font-size: 0.875rem; padding: 4px; width: 100%;">
-                                            </td>
-                                            <td class="col-amount" style="text-align: center !important; padding: 0.25rem !important;">
-                                                <input type="number" step="0.01" min="0.01" class="form-control record-input amount-input text-black" 
-                                                       th:attr="data-id=${record.id}, data-field='amount'" 
-                                                       th:value="${record.amount}" 
-                                                       onblur="saveRecord(this)" 
-                                                       onkeypress="if(event.key === 'Enter') { saveRecord(this); this.blur(); }" 
-                                                       style="text-align: center; font-weight: 500; font-size: 0.875rem; padding: 4px; width: 100%;">
-                                            </td>
-                                            <td class="col-type" style="text-align: center !important; padding: 0.25rem !important; width: 70px;">
-                                                <span th:class="'badge ' + (${record.type == 'income'} ? 'bg-red-lt' : 'bg-green-lt')" 
-                                                      style="text-align: center !important; display: inline-block; font-size: 0.75rem; padding: 0.25rem 0.5rem;" 
-                                                      th:text="${record.type == 'income' ? 'Income' : 'Expense'}">
-                                                    Expense
-                                                </span>
-                                            </td>
-                                            <td class="col-action" style="text-align: center !important; padding: 0 !important; height: 100%;">
-                                                <div class="btn-list flex-nowrap" style="justify-content: center !important; gap: 0.125rem; margin: 0; padding: 0;">
-                                                    <button class="btn btn-xs btn-icon btn-action" 
-                                                            th:attr="data-id=${record.id}, data-type='expense'" 
-                                                            onclick="deleteRecord(this)" 
-                                                            title="Delete" 
-                                                            style="padding: 0 !important; margin: 0 !important; min-height: auto; height: 1.25rem; width: 1.25rem; display: flex; align-items: center; justify-content: center;">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
                             </div>
                         </div>
                     </div>
@@ -310,7 +398,7 @@
                 </div>
                 <div class="col">
                     <div style="font-weight: bold;">
-                    [[${#numbers.formatCurrency(totalIncome)}]]
+                    [[${#numbers.formatDecimal(totalIncome, 2, 2)}]]
                     <span class="float-end text-red" style="font-weight: bold;">+</span>
                     </div>
                     <div class="text-secondary">Total Income</div>
@@ -332,10 +420,30 @@
                 </div>
                 <div class="col">
                     <div style="font-weight: bold;">
-                    [[${#numbers.formatCurrency(totalExpense)}]]
+                    [[${#numbers.formatDecimal(totalExpense, 2, 2)}]]
                     <span class="float-end text-green" style="font-weight: bold;">-</span>
                     </div>
                     <div class="text-secondary">Total Expense</div>
+                </div>
+                </div>
+            </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="card card-sm">
+                            <div class="card-body">
+                <div class="row align-items-center">
+                <div class="col-auto">
+                    <span class="bg-info text-white avatar"><!-- Download SVG icon from http://tabler.io/icons/icon/calculator -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-1">
+                        <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
+                        <path d="M8 8h8"></path>
+                        <path d="M8 12h8"></path>
+                        <path d="M8 16h8"></path></svg></span>
+                </div>
+                <div class="col">
+                    <div id="diff-amount" style="font-weight: bold;">[[${#numbers.formatDecimal(incomeMinusExpense, 2, 2)}]]</div>
+                    <div class="text-secondary">In - Exp</div>
                 </div>
                 </div>
             </div>
@@ -352,13 +460,42 @@
                         <path d="M12 3v3m0 12v3"></path></svg></span>
                 </div>
                 <div class="col">
-                    <div style="font-weight: bold;">￥[[${#numbers.formatCurrency(balance)}]]</div>
-                    <div class="text-secondary">Balance</div>
+                    <div style="font-weight: bold;">[[${#numbers.formatDecimal(balance, 2, 2)}]]</div>
+                    <div class="text-secondary">Total Balance</div>
                 </div>
                 </div>
             </div>
                             </div>
                         </div>
+                        <div class="col-12">
+                            <div class="card card-sm" style="position: relative;">
+                            <div class="card-body">
+                <div class="row align-items-center">
+                <div class="col-auto">
+                    <span class="bg-warning text-white avatar"><!-- Download SVG icon from http://tabler.io/icons/icon/traffic-lights -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-1">
+                        <path d="M7 2m0 5a5 5 0 0 1 5 -5h0a5 5 0 0 1 5 5v10a5 5 0 0 1 -5 5h0a5 5 0 0 1 -5 -5z"></path>
+                        <path d="M12 7m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                        <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                        <path d="M12 17m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path></svg></span>
+                </div>
+                <div class="col">
+                    <div id="traffic-light-amount" style="font-weight: bold;" th:text="${#numbers.formatDecimal(incomeMinusExpense.subtract(balance), 0, 2)}"></div>
+                    <div class="text-secondary">Diff</div>
+                </div>
+                </div>
+            </div>
+            <!-- Status indicator in top right corner -->
+            <div style="position: absolute; top: 0px; right: 0px;">
+                <span id="status-indicator" th:class="${incomeMinusExpense.compareTo(balance) < 0} ? 'status-indicator status-green status-indicator-animated' : 'status-indicator status-red status-indicator-animated'">
+                    <span class="status-indicator-circle"></span>
+                    <span class="status-indicator-circle"></span>
+                    <span class="status-indicator-circle"></span>
+                </span>
+            </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -425,23 +562,15 @@
     
     // 添加空行函数
     function addEmptyRow(type) {
-        // 找到对应类型的表格 - 使用原生JavaScript方法
-        const cardHeaders = document.querySelectorAll('.card-header');
-        let tableContainer;
-        
-        for (const header of cardHeaders) {
-            const title = header.querySelector('h3.card-title');
-            if (title) {
-                if (type === 'income' && title.textContent.includes('Income Records')) {
-                    tableContainer = header.closest('.card');
-                    break;
-                } else if (type === 'expense' && title.textContent.includes('Expense Records')) {
-                    tableContainer = header.closest('.card');
-                    break;
-                }
-            }
+        // 找到对应类型的表格 - 根据type直接获取对应的tbody
+        let tbody;
+        if (type === 'income') {
+            tbody = document.getElementById('income-tbody');
+        } else if (type === 'expense') {
+            tbody = document.getElementById('expense-tbody');
+        } else if (type === 'balance') {
+            tbody = document.getElementById('balance-tbody');
         }
-        const tbody = tableContainer.querySelector('tbody');
         
         // 检查是否已有空行
         if (tbody.querySelector('.new-record-row')) {
@@ -461,7 +590,14 @@
         newRow.style.height = '40px';
         
         // 设置类型样式和颜色
-        const typeClass = type === 'income' ? 'bg-red-lt' : 'bg-green-lt';
+        let typeClass;
+        if (type === 'income') {
+            typeClass = 'bg-red-lt';
+        } else if (type === 'expense') {
+            typeClass = 'bg-green-lt';
+        } else if (type === 'balance') {
+            typeClass = 'bg-primary-lt';
+        }
         const amountClass = 'text-black';
         
         // 构建行内容 - 添加拖拽列
@@ -492,9 +628,9 @@
                        style="text-align: center; font-weight: 500; font-size: 0.875rem; padding: 4px; width: 100%;">
             </td>
             <td class="col-type" style="text-align: center !important; padding: 0.25rem !important; width: 70px;">
-                <span class="badge ${typeClass}" 
+                <span class="badge ${typeClass}"
                       style="text-align: center !important; display: inline-block; font-size: 0.75rem; padding: 0.25rem 0.5rem;">
-                    ${type === 'income' ? 'Income' : 'Expense'}
+                    ${type === 'income' ? 'Income' : type === 'expense' ? 'Expense' : 'Balance'}
                 </span>
             </td>
             <td class="col-action" style="text-align: center !important; padding: 0 !important; height: 100%;">
@@ -562,7 +698,9 @@
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
-                    // 保存成功，刷新页面
+                    // 保存成功，保存当前Tab到localStorage
+                    localStorage.setItem('activeTab', type);
+                    // 刷新页面
                     window.location.reload();
                 } else {
                     // 保存失败，显示错误信息
@@ -636,26 +774,57 @@
                 try {
                     const stats = JSON.parse(xhr.responseText);
                     
+                    // 转换为数字类型
+                    const totalIncome = parseFloat(stats.totalIncome);
+                    const totalExpense = parseFloat(stats.totalExpense);
+                    const balance = parseFloat(stats.balance);
+                    const incomeMinusExpense = parseFloat(stats.incomeMinusExpense);
+                    
                     // 更新页面上的统计指标
                     // 找到显示totalIncome的元素
                     const totalIncomeCard = document.querySelector('.card-body:has(.bg-red-lt) .col div');
-                    if (totalIncomeCard && totalIncomeCard.textContent.includes('￥')) {
+                    if (totalIncomeCard) {
                         const spanPart = totalIncomeCard.innerHTML.substring(totalIncomeCard.innerHTML.indexOf('<span'));
-                        totalIncomeCard.innerHTML = '￥' + stats.totalIncome.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + spanPart;
+                        totalIncomeCard.innerHTML = totalIncome.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + spanPart;
                     }
                     
                     // 找到显示totalExpense的元素
                     const totalExpenseCard = document.querySelector('.card-body:has(.bg-green-lt) .col div');
-                    if (totalExpenseCard && totalExpenseCard.textContent.includes('￥')) {
+                    if (totalExpenseCard) {
                         const spanPart = totalExpenseCard.innerHTML.substring(totalExpenseCard.innerHTML.indexOf('<span'));
-                        totalExpenseCard.innerHTML = '￥' + stats.totalExpense.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + spanPart;
+                        totalExpenseCard.innerHTML = totalExpense.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + spanPart;
                     }
                     
                     // 找到显示balance的元素
                     const balanceElement = document.querySelector('.card-body:has(.bg-primary) .col div');
-                    if (balanceElement && balanceElement.textContent.includes('￥')) {
-                        balanceElement.textContent = '￥' + stats.balance.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    if (balanceElement) {
+                        balanceElement.textContent = balance.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                     }
+                    
+                    // 更新差额显示（第4个卡片）
+                    const diffElement = document.getElementById('diff-amount');
+                    if (diffElement) {
+                        diffElement.textContent = incomeMinusExpense.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    }
+                    
+                    // 更新状态指示器（单独的红绿灯卡片）
+                    const statusIndicator = document.getElementById('status-indicator');
+                    if (statusIndicator && incomeMinusExpense !== undefined && balance !== undefined) {
+                        if (incomeMinusExpense < balance) {
+                            statusIndicator.className = 'status-indicator status-green status-indicator-animated';
+                        } else {
+                            statusIndicator.className = 'status-indicator status-red status-indicator-animated';
+                        }
+                    }
+                    
+                    // 更新Traffic Light卡片的标题数值
+                    const trafficLightAmount = document.getElementById('traffic-light-amount');
+                    if (trafficLightAmount && incomeMinusExpense !== undefined && balance !== undefined) {
+                        const diffValue = incomeMinusExpense - balance;
+                        trafficLightAmount.textContent = diffValue.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    }
+                    
+
                 } catch (error) {
                     console.error('Error parsing stats data:', error);
                 }
@@ -681,7 +850,9 @@
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
-                        // 删除成功，刷新页面
+                        // 删除成功，保存当前Tab到localStorage
+                        localStorage.setItem('activeTab', type);
+                        // 刷新页面
                         window.location.reload();
                     } else {
                         // 删除失败，显示错误信息
@@ -712,7 +883,9 @@
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
-                        // 删除成功，刷新页面
+                        // 删除成功，保存当前Tab到localStorage
+                        localStorage.setItem('activeTab', type);
+                        // 刷新页面
                         window.location.reload();
                     } else {
                         // 删除失败，显示错误信息
@@ -838,9 +1011,41 @@
         xhr.send(JSON.stringify({ ids: ids }));
     }
 
-    // 页面加载完成后初始化拖拽功能
+    // 页面加载完成后初始化拖拽功能和Tab状态
     document.addEventListener('DOMContentLoaded', function() {
         initDragAndDrop();
+        
+        // 恢复之前保存的Tab状态
+        const activeTab = localStorage.getItem('activeTab');
+        if (activeTab) {
+            // 延迟执行，确保Bootstrap完全加载
+            setTimeout(function() {
+                const tabId = activeTab + '-tab';
+                const tabElement = document.getElementById(tabId);
+                if (tabElement) {
+                    // 移除所有tab的active类
+                    document.querySelectorAll('.nav-link').forEach(function(el) {
+                        el.classList.remove('active');
+                        el.setAttribute('aria-selected', 'false');
+                    });
+                    document.querySelectorAll('.tab-pane').forEach(function(el) {
+                        el.classList.remove('show', 'active');
+                    });
+                    
+                    // 添加active类到目标tab
+                    tabElement.classList.add('active');
+                    tabElement.setAttribute('aria-selected', 'true');
+                    
+                    const targetId = tabElement.getAttribute('data-bs-target');
+                    const targetPane = document.querySelector(targetId);
+                    if (targetPane) {
+                        targetPane.classList.add('show', 'active');
+                    }
+                }
+                // 清除保存的Tab状态
+                localStorage.removeItem('activeTab');
+            }, 100);
+        }
     });
 </script>
 </body>
